@@ -6,6 +6,7 @@ use Inertia\Inertia;
 // User
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Admin\ClientController as AdminClientController;
 // Service
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\DocumentController;
@@ -66,6 +67,7 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
 
         // Clients
         Route::get('/users/{user}/clients', [ClientController::class, 'index'])->name('users.clients.index');
+        Route::put('/files/{file}/status', [AdminClientController::class, 'updateDocumentStatus'])->name('update-document-status');
 
         // Serviços
         Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
@@ -85,7 +87,8 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
 
         // Aqui você pode adicionar rotas extras no futuro:
-        // Route::post('/services/{service}/duplicate', [ServiceController::class, 'duplicate'])->name('services.duplicate');
+         Route::get('/clients', [AdminClientController::class, 'index'])->name('clients.index');
+        Route::get('/clients/{client}', [AdminClientController::class, 'show'])->name('clients.show');
     });
 
 

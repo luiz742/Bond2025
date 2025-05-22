@@ -33,6 +33,7 @@ class User extends Authenticatable
         'contact_number',
         'tax_registration_number',
         'role',
+        'service_id'
     ];
 
     /**
@@ -73,4 +74,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Client::class);
     }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class);
+    }
+
 }

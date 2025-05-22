@@ -27,10 +27,12 @@ class DocumentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|in:client,company',
         ]);
 
         $service->documents()->create([
             'name' => $request->name,
+            'type' => $request->type,
         ]);
 
         // Retorna para a mesma página Service Show (via Inertia)
@@ -45,10 +47,12 @@ class DocumentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|in:client,company',
         ]);
 
         $document->update([
             'name' => $request->name,
+            'type' => $request->type,
         ]);
 
         return redirect()->route('admin.services.show', $document->service_id)

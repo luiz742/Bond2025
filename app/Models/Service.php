@@ -21,4 +21,10 @@ class Service extends Model
         return $this->hasMany(Client::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+
 }

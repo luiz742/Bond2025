@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Service;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -45,9 +46,10 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', Rules\Password::defaults()],
-            'role' => ['required', 'in:admin,b2b'], // ajuste conforme suas roles
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users' . ($user->id ?? '')],
+            'password' => $request->isMethod('post') ? ['required', Rules\Password::defaults()] : ['nullable', Rules\Password::defaults()],
+            'role' => ['required', 'in:admin,b2b'],
+            'service_id' => ['nullable', 'integer', 'exists:services,id'], // aqui
         ]);
 
         User::create([
@@ -55,6 +57,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
+            'service_id' => $validated['service_id'] ?? null,
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User created.');
@@ -62,8 +65,10 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        $services = Service::all();
         return Inertia::render('Admin/Users/Edit', [
             'user' => $user,
+            'services' => $services,
         ]);
     }
 
@@ -74,12 +79,14 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'password' => ['nullable', Rules\Password::defaults()],
             'role' => ['required', 'in:admin,b2b'],
+            'service_id' => ['nullable', 'integer', 'exists:services,id'], // aqui
         ]);
 
         $user->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
+            'service_id' => $validated['service_id'] ?? null,
             'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
         ]);
 

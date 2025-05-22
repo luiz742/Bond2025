@@ -67,27 +67,45 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('profile.show')">
                                 <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.services.index')" :active="route().current('dashboard')">
+
+                            <!-- Services - apenas para super_admin -->
+                            <div v-if="$page.props.auth.user.role === 'super_admin'"
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('admin.services.index')"
+                                    :active="route().current('admin.services.index')">
                                     Services
                                 </NavLink>
                             </div>
 
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.subagents.index')" :active="route().current('dashboard')">
+                            <!-- Subagents - apenas para super_admin -->
+                            <div v-if="$page.props.auth.user.role === 'super_admin'"
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('admin.subagents.index')"
+                                    :active="route().current('admin.subagents.index')">
                                     Subagents
                                 </NavLink>
                             </div>
 
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.users.index')" :active="route().current('dashboard')">
+                            <!-- Users - apenas para super_admin -->
+                            <div v-if="$page.props.auth.user.role === 'super_admin'"
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('admin.users.index')"
+                                    :active="route().current('admin.users.index')">
                                     Users
+                                </NavLink>
+                            </div>
+
+                            <!-- Clients - apenas para admin -->
+                            <div v-if="$page.props.auth.user.role === 'admin'"
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('clients.index')" :active="route().current('clients.index')">
+                                    Clients
                                 </NavLink>
                             </div>
 
