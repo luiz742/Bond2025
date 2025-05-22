@@ -159,7 +159,7 @@ const getFileUrl = (file) => {
                                                 {{ getFileForDocument(document.id).status }}
                                                 <a :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
                                                     class="ml-4 text-blue-600 hover:underline">
-                                                    View Document
+                                                    Open Document
                                                 </a>
                                             </div>
                                         </template>
