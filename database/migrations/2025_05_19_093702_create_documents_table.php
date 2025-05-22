@@ -8,7 +8,7 @@ class CreateDocumentsTable extends Migration
 {
     public function up()
     {
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->id();
 
             // Foreign key para o usuário dono do client
