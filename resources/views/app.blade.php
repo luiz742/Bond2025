@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Favicon para modo claro -->
+    <link rel="icon" type="image/png" href="{{ asset('images/icon-logo.png') }}" media="(prefers-color-scheme: light)">
+
+    <!-- Favicon para modo escuro -->
+    <link rel="icon" type="image/png" href="{{ asset('images/icon-logo-white.png') }}"
+        media="(prefers-color-scheme: dark)">
+
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
