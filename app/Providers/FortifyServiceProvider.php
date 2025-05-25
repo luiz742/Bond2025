@@ -59,7 +59,7 @@ class FortifyServiceProvider extends ServiceProvider
                             return redirect('/clients');
                         }
 
-                        return redirect('/user/profile'); // fallback
+                        return redirect('/admin/users'); // fallback
                     }
                 };
             }
