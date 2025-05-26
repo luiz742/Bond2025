@@ -33,8 +33,6 @@ defineProps({
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-gray-800">
                             <tr>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">ID
-                                </th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Name</th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -54,7 +52,6 @@ defineProps({
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             <tr v-for="client in clients.data" :key="client.id"
                                 class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.id }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.name }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.service.name }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.user.name }}</td>

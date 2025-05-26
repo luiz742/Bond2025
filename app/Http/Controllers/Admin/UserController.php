@@ -22,6 +22,7 @@ class UserController extends Controller
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
+            'name' => "Subagent"
         ]);
     }
 
@@ -34,6 +35,7 @@ class UserController extends Controller
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
+            'name' => "User"
         ]);
     }
 
@@ -60,7 +62,12 @@ class UserController extends Controller
             'service_id' => $validated['service_id'] ?? null,
         ]);
 
-        return redirect()->route('admin.users.index')->with('success', 'User created.');
+        if (in_array($request->role, ['admin', 'super_admin'])) {
+            return redirect()->route('admin.users.index')->with('success', 'User created.');
+        }
+
+        return redirect()->route('admin.subagents.index')->with('success', 'User created.');
+
     }
 
     public function edit(User $user)
