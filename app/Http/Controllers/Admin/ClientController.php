@@ -30,7 +30,7 @@ class ClientController extends Controller
     {
         $user = auth()->user();
         $client = Client::where('id', $id)
-            ->with(['service', 'files', 'user'])
+            ->with(['service.documents', 'files', 'user'])
             ->firstOrFail();
 
         return Inertia::render('Admin/Clients/Show', [
