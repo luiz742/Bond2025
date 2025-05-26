@@ -18,7 +18,26 @@ use App\Http\Controllers\ClientFileController;
 use App\Http\Controllers\InvoiceController;
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    $user = Auth::user();
+
+    if (!$user) {
+        return redirect()->route('login');
+    }
+
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.myclients');
+    }
+
+    if ($user->role === 'b2b') {
+        return redirect()->route('clients.index');
+    }
+
+    if ($user->role === 'super_admin') {
+        return redirect()->route('admin.users.index');
+    }
+
+    // default
+    return redirect()->route('profile.show');
 });
 
 Route::middleware([
