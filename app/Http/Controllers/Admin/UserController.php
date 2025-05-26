@@ -29,7 +29,7 @@ class UserController extends Controller
     public function admin()
     {
         $users = User::select('id', 'name', 'email', 'role', 'created_at')
-            ->where('role', 'admin') // <- só usuários b2b
+            ->whereIn('role', ['admin', 'super_admin'])
             ->latest()
             ->paginate(10);
 
@@ -98,5 +98,16 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('admin.users.index')->with('success', 'User updated.');
+    }
+
+    // View Clients of a User
+    public function show(User $user)
+    {
+        $clients = $user->clients()->select('id', 'name', 'created_at')->latest()->paginate(10);
+
+        return Inertia::render('Admin/Users/Show', [
+            'user' => $user,
+            'clients' => $clients,
+        ]);
     }
 }
