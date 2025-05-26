@@ -104,7 +104,11 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         Route::get('/clients', [AdminClientController::class, 'index'])->name('clients.index');
         Route::get('/clients/create', [AdminClientController::class, 'create'])->name('clients.create');
         Route::post('/clients', [AdminClientController::class, 'store'])->name('clients.store');
+
+        // My Clients
         Route::get('/my/clients', [AdminClientController::class, 'myclients'])->name('myclients');
+        Route::get('/my/clients/create', [AdminClientController::class, 'mycreate'])->name('myclients.create');
+        Route::post('/myclients', [AdminClientController::class, 'mystore'])->name('myclients.store');
     });
 
 

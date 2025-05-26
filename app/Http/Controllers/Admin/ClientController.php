@@ -90,14 +90,51 @@ class ClientController extends Controller
     // My Clients
     public function myclients()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
-        $clients = $user->clients()->with('service')->paginate(15);
+        $clients = Client::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->with(['service', 'files', 'user'])
+            ->paginate(10);
 
         return Inertia::render('Admin/Clients/MyClients', [
             'clients' => $clients,
-            'user' => $user,
         ]);
+    }
+
+    public function mycreate(Request $request)
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'service_id' => 'required|exists:services,id',
+        ]);
+
+        $validated['user_id'] = $user->id;
+
+        Client::create($validated);
+
+        return redirect()->route('admin.myclients')
+            ->with('success', 'Client created successfully.');
+    }
+
+
+    public function mystore(Request $request)
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'service_id' => 'required|exists:services,id',
+        ]);
+
+        $validated['user_id'] = $user->id;
+
+        Client::create($validated);
+
+        return redirect()->route('admin.myclients')
+            ->with('success', 'Client created successfully.');
     }
 }
 
