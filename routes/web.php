@@ -82,8 +82,10 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
 
         // Aqui você pode adicionar rotas extras no futuro:
-         Route::get('/clients', [AdminClientController::class, 'index'])->name('clients.index');
-        Route::get('/clients/{client}', [AdminClientController::class, 'show'])->name('clients.show');
+        Route::get('/clients', [AdminClientController::class, 'index'])->name('clients.index');
+        Route::get('/clients/create', [AdminClientController::class, 'create'])->name('clients.create');
+        Route::post('/clients', [AdminClientController::class, 'store'])->name('clients.store');
+        Route::get('/my/clients', [AdminClientController::class, 'myclients'])->name('myclients');
     });
 
 

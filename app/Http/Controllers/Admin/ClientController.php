@@ -7,6 +7,7 @@ use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\File;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -17,7 +18,7 @@ class ClientController extends Controller
 
         $clients = Client::where('service_id', $user->service_id)
             ->orderBy('created_at', 'desc')
-            ->with(['service', 'files'])
+            ->with(['service', 'files', 'user'])
             ->paginate(10);
 
         return Inertia::render('Admin/Clients/Index', [
@@ -43,6 +44,35 @@ class ClientController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $user = auth()->user();
+        $services = Service::where('id', $user->service_id)
+            ->with('documents')
+            ->get();
+        return Inertia::render('Admin/Clients/Create', [
+            'services' => $services,
+            'user' => $user,
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'service_id' => 'required|exists:services,id',
+        ]);
+
+        $validated['user_id'] = $user->id;
+
+        Client::create($validated);
+
+        return redirect()->route('admin.clients.index')
+            ->with('success', 'Client created successfully.');
+    }
+
     public function updateDocumentStatus(Request $request, File $file)
     {
         // dd("Chegou no update status para o arquivo: {$file->id}, status novo: {$request->status}");
@@ -56,4 +86,18 @@ class ClientController extends Controller
 
         return redirect()->back()->with('success', 'Document status updated.');
     }
+
+    // My Clients
+    public function myclients()
+    {
+        $user = auth()->user();
+
+        $clients = $user->clients()->with('service')->paginate(15);
+
+        return Inertia::render('Admin/Clients/MyClients', [
+            'clients' => $clients,
+            'user' => $user,
+        ]);
+    }
 }
+

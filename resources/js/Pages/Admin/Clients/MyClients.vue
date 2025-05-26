@@ -41,9 +41,6 @@ defineProps({
                                     Service
                                 </th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Subagent
-                                </th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Created At
                                 </th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -57,7 +54,6 @@ defineProps({
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.id }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.name }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.service.name }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.user.name }}</td>
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ new
                                     Date(client.created_at).toLocaleDateString() }}</td>
                                 <td class="px-4 py-2 text-sm">
