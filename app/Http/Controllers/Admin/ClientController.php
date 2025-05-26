@@ -105,18 +105,13 @@ class ClientController extends Controller
     public function mycreate(Request $request)
     {
         $user = auth()->user();
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'service_id' => 'required|exists:services,id',
+        $services = Service::where('id', $user->service_id)
+            ->with('documents')
+            ->get();
+        return Inertia::render('Admin/Clients/MyCreate', [
+            'services' => $services,
+            'user' => $user,
         ]);
-
-        $validated['user_id'] = $user->id;
-
-        Client::create($validated);
-
-        return redirect()->route('admin.myclients')
-            ->with('success', 'Client created successfully.');
     }
 
 
