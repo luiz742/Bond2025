@@ -104,7 +104,7 @@ const logout = () => {
                             <!-- Clients - apenas para admin -->
                             <div v-if="$page.props.auth.user.role === 'admin'"
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('clients.index')" :active="route().current('clients.index')">
+                                <NavLink :href="route('admin.clients.index')" :active="route().current('admin.clients.index')">
                                     Clients
                                 </NavLink>
                             </div>
