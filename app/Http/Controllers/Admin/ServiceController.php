@@ -27,12 +27,13 @@ class ServiceController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
         ]);
 
         Service::create($request->only('name'));
 
         return redirect()->route('admin.services.index')
-            ->with('success', 'Serviço criado com sucesso.');
+            ->with('success', 'Service has been created.');
     }
 
     public function show($id)

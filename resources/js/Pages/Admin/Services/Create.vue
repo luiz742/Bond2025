@@ -9,6 +9,7 @@ import { useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     name: '',
+    country: ''
 });
 
 const submit = () => {
@@ -41,6 +42,18 @@ const submit = () => {
                                 autocomplete="off"
                             />
                             <InputError :message="form.errors.name" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <InputLabel for="country" value="Service Country" />
+                            <TextInput
+                                id="country"
+                                v-model="form.country"
+                                type="text"
+                                class="mt-2 block w-full"
+                                autocomplete="off"
+                            />
+                            <InputError :message="form.errors.country" class="mt-2" />
                         </div>
 
                         <!-- Submit Button -->

@@ -58,7 +58,7 @@ defineProps({
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ new
                                     Date(client.created_at).toLocaleDateString() }}</td>
                                 <td class="px-4 py-2 text-sm">
-                                    <Link :href="`/clients/${client.id}`" class="text-blue-600 hover:underline">
+                                    <Link :href="`/admin/clients/${client.id}`" class="text-blue-600 hover:underline">
                                     View
                                     </Link>
                                 </td>

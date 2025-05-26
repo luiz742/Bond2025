@@ -26,21 +26,16 @@ class ClientController extends Controller
         ]);
     }
 
-    public function show(Client $client)
+    public function show(Client $client, $id)
     {
-        $user = Auth::user();
-
-        // Verifica se o usuário tem permissão para acessar o client pelo serviço permitido
-        if ($user->service_allowed && $client->service_id !== $user->service_allowed) {
-            abort(403, 'Access denied');
-        }
-
-        // Carrega os relacionamentos necessários para o show
-        $client->load(['service.documents', 'files']);
+        $user = auth()->user();
+        $client = Client::where('id', $id)
+            ->with(['service', 'files', 'user'])
+            ->firstOrFail();
 
         return Inertia::render('Admin/Clients/Show', [
             'client' => $client,
-            'user' => $user, // pode ser útil para controle na view admin
+            'user' => $user,
         ]);
     }
 
