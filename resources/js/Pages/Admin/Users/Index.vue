@@ -24,7 +24,7 @@ defineProps({
 
                         <PrimaryButton as="span">
                             <Link href="/admin/users/create" class="block w-full h-full text-white">
-                                New User
+                                New Subagent
                             </Link>
                         </PrimaryButton>
                     </div>

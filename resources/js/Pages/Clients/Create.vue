@@ -1,6 +1,7 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     user: Object,
@@ -55,12 +56,11 @@ const submit = () => {
                             </select>
                         </div>
 
-                        <div class="pt-4">
-                            <button type="submit" :disabled="form.processing"
-                                class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-white hover:bg-indigo-700 disabled:opacity-25">
-                                Save
-                            </button>
-                        </div>
+                        <PrimaryButton :class="{ 'opacity-25 cursor-not-allowed': form.processing }"
+                            :disabled="form.processing">
+                            Submit
+                        </PrimaryButton>
+
                     </form>
                 </div>
             </div>

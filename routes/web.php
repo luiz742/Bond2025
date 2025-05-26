@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\UserController;
 // File
 use App\Http\Controllers\ClientFileController;
+// Invoices
+use App\Http\Controllers\InvoiceController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -42,7 +44,6 @@ Route::middleware('auth')->group(function () {
 
     // File Upload
     Route::post('/clients/upload-documents', [ClientFileController::class, 'store'])->name('client.upload-documents');
-
 });
 
 

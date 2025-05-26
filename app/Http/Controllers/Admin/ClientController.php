@@ -17,6 +17,7 @@ class ClientController extends Controller
 
         $clients = Client::where('service_id', $user->service_id)
             ->orderBy('created_at', 'desc')
+            ->with(['service', 'files'])
             ->paginate(10);
 
         return Inertia::render('Admin/Clients/Index', [
