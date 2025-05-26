@@ -60,6 +60,7 @@ const submit = () => {
                             class="mt-1 w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-900 dark:text-white">
                             <option value="admin">Admin</option>
                             <option value="b2b">B2B</option>
+                            <option value="super_admin">Super Admin</option>
                         </select>
                         <div v-if="form.errors.role" class="text-red-600 text-sm mt-1">{{ form.errors.role }}</div>
                     </div>
