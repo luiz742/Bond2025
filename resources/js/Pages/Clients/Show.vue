@@ -141,7 +141,7 @@ const getFileUrl = (file) => {
                     <!-- TABELA 2: Documentos que a empresa envia -->
                     <div class="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                            Documents Issued By {{ client.service.name }} Government
+                            Documents Issued By {{ client.service.country }} Government
                         </h4>
 
                         <input v-model="filterText" type="text" placeholder="Filter company documents..."
