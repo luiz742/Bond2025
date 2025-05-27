@@ -46,4 +46,23 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            // adicione outras validações se necessário
+        ]);
+
+        $service = Service::findOrFail($id);
+        $service->update([
+            'name' => $request->name,
+            'country' => $request->country,
+            // adicione outros campos se necessário
+        ]);
+
+        return redirect()->route('admin.services.index')
+            ->with('success', 'Service has been updated.');
+    }
+
 }
