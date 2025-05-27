@@ -1,5 +1,5 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3'
+import { Link, router, useForm } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 
@@ -7,6 +7,18 @@ defineProps({
     user: Object,
     clients: Object,
 })
+
+// Criando o form do Inertia.js (não há campos visíveis pois é para DELETE)
+const form = useForm({})
+
+// Função de exclusão usando useForm
+const deleteClient = (id) => {
+    if (confirm('Delete Client?')) {
+        form.delete(route('admin.clients.mydestroy', id), {
+            preserveScroll: true,
+        })
+    }
+}
 </script>
 
 <template>
@@ -52,7 +64,11 @@ defineProps({
                                 <td class="px-4 py-2 text-sm">
                                     <Link :href="`/admin/clients/${client.id}`" class="text-blue-600 hover:underline">
                                     View
-                                    </Link>
+                                    </Link>/
+                                    <button @click="deleteClient(client.id)" class="text-red-600 hover:underline"
+                                        :disabled="form.processing">
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>

@@ -127,6 +127,19 @@ class ClientController extends Controller
         ]);
     }
 
+    public function mydestroy(Client $client)
+    {
+        // Verifica se o usuário autenticado é o dono do cliente
+        if (auth()->user()->id !== $client->user_id) {
+            return redirect()->back()->dangerBanner('error', "You don't have permission to delete this client.");
+        }
+
+        $client->delete();
+        return redirect()->back()
+            ->banner('Client deleted successfully.');
+
+    }
+
     public function mycreate(Request $request)
     {
         $user = auth()->user();

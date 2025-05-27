@@ -118,6 +118,7 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         Route::get('/my/clients', [AdminClientController::class, 'myclients'])->name('myclients');
         Route::get('/my/clients/create', [AdminClientController::class, 'mycreate'])->name('myclients.create');
         Route::post('/myclients', [AdminClientController::class, 'mystore'])->name('myclients.store');
+        Route::delete('/clients/{client}', [AdminClientController::class, 'mydestroy'])->name('clients.mydestroy');
     });
 
 
