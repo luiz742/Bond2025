@@ -19,7 +19,6 @@ const deleteClient = (id) => {
         })
     }
 }
-
 </script>
 
 <template>

@@ -81,6 +81,7 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::delete('/users/client/{client}', [UserController::class, 'clientdestroy'])->name('users.client.destroy');
 
 
         // Clients

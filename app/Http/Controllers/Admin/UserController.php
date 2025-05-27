@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Client;
 use App\Models\Service;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
@@ -124,6 +125,19 @@ class UserController extends Controller
 
         // Apaga o usuário
         $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
+    public function clientdestroy(Client $client)
+    {
+        // Opcional: impedir que um super admin exclua a si mesmo
+        if (auth()->id() === $client->id) {
+            return redirect()->back()->with('error', 'Você não pode excluir a si mesmo.');
+        }
+
+        // Apaga o usuário
+        $client->delete();
 
         return redirect()->back()->with('success', 'User deleted successfully.');
     }
