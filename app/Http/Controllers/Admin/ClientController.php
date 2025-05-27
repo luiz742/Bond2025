@@ -7,6 +7,7 @@ use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\File;
+use App\Models\User;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -67,6 +68,35 @@ class ClientController extends Controller
         return redirect()->route('admin.clients.index')
             ->with('success', 'Client created successfully.');
     }
+
+    public function clientuser(Request $request, User $user)
+    {
+
+        $services = Service::
+            with('documents')
+            ->get();
+        return Inertia::render('Admin/Users/ClientUsers', [
+            'services' => $services,
+            'user' => $user,
+        ]);
+    }
+
+    public function clientuserstore(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'service_id' => 'nullable|exists:services,id',
+        ]);
+
+        // Define o user_id para o user da rota (não o usuário logado)
+        $validated['user_id'] = $user->id;
+
+        Client::create($validated);
+
+        return redirect()->route('admin.users.show', ['user' => $user->id])
+            ->with('success', 'Client created successfully.');
+    }
+
 
     public function updateDocumentStatus(Request $request, File $file)
     {

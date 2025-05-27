@@ -20,9 +20,11 @@ class UserController extends Controller
             ->latest()
             ->paginate(10);
 
+        $services = Service::all();
+
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
-            'name' => "Subagent"
+            'name' => "Subagent",
         ]);
     }
 
@@ -103,11 +105,13 @@ class UserController extends Controller
     // View Clients of a User
     public function show(User $user)
     {
+        $services = Service::all();
         $clients = $user->clients()->select('id', 'name', 'created_at')->latest()->paginate(10);
 
         return Inertia::render('Admin/Users/Show', [
             'user' => $user,
             'clients' => $clients,
+            'services' => $services,
         ]);
     }
 }
