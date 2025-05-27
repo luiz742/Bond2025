@@ -27,7 +27,7 @@ class ClientFileController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Arquivos enviados com sucesso.');
+        return back()->banner('Arquivos enviados com sucesso.');
     }
 
 

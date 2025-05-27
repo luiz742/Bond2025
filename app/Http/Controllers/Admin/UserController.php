@@ -66,10 +66,10 @@ class UserController extends Controller
         ]);
 
         if (in_array($request->role, ['admin', 'super_admin'])) {
-            return redirect()->route('admin.users.index')->with('success', 'User created.');
+            return redirect()->route('admin.users.index')->banner('User created.');
         }
 
-        return redirect()->route('admin.subagents.index')->with('success', 'User created.');
+        return redirect()->route('admin.subagents.index')->banner('User created.');
 
     }
 
@@ -88,7 +88,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'password' => ['nullable', Rules\Password::defaults()],
-            'role' => ['required', 'in:admin,b2b'],
+            'role' => ['required', 'in:admin,b2b,super_admin'],
             'service_id' => ['nullable', 'integer', 'exists:services,id'], // aqui
         ]);
 
@@ -100,7 +100,8 @@ class UserController extends Controller
             'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
         ]);
 
-        return redirect()->route('admin.users.index')->with('success', 'User updated.');
+        return redirect()->back()->banner('User updated.');
+
     }
 
     // View Clients of a User
@@ -120,26 +121,26 @@ class UserController extends Controller
     {
         // Opcional: impedir que um super admin exclua a si mesmo
         if (auth()->id() === $user->id) {
-            return redirect()->back()->with('error', 'Você não pode excluir a si mesmo.');
+            return redirect()->back()->dangerBanner('Você não pode excluir a si mesmo.');
         }
 
         // Apaga o usuário
         $user->delete();
 
-        return redirect()->back()->with('success', 'User deleted successfully.');
+        return redirect()->back()->banner('User deleted successfully.');
     }
 
     public function clientdestroy(Client $client)
     {
         // Opcional: impedir que um super admin exclua a si mesmo
         if (auth()->id() === $client->id) {
-            return redirect()->back()->with('error', 'Você não pode excluir a si mesmo.');
+            return redirect()->back()->dangerBanner('error', 'Você não pode excluir a si mesmo.');
         }
 
         // Apaga o usuário
         $client->delete();
 
-        return redirect()->back()->with('success', 'User deleted successfully.');
+        return redirect()->back()->banner('User deleted successfully.');
     }
 
 }

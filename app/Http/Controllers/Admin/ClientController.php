@@ -66,7 +66,7 @@ class ClientController extends Controller
         Client::create($validated);
 
         return redirect()->route('admin.clients.index')
-            ->with('success', 'Client created successfully.');
+            ->banner('Client created successfully.');
     }
 
     public function clientuser(Request $request, User $user)
@@ -94,7 +94,7 @@ class ClientController extends Controller
         Client::create($validated);
 
         return redirect()->route('admin.users.show', ['user' => $user->id])
-            ->with('success', 'Client created successfully.');
+            ->banner('Client created successfully.');
     }
 
 
@@ -109,7 +109,7 @@ class ClientController extends Controller
         $file->status = $request->status;
         $file->save();
 
-        return redirect()->back()->with('success', 'Document status updated.');
+        return redirect()->back()->banner('Document status updated.');
     }
 
     // My Clients
@@ -154,13 +154,13 @@ class ClientController extends Controller
         Client::create($validated);
 
         return redirect()->route('admin.myclients')
-            ->with('success', 'Client created successfully.');
+            ->banner('Client created successfully.');
     }
 
     public function destroy(Client $client) {
         $client->delete();
         return redirect()->route('admin.clients.index')
-            ->with('success', 'Client deleted successfully.');
+            ->banner('Client deleted successfully.');
     }
 }
 

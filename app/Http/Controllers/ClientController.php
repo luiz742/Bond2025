@@ -63,6 +63,6 @@ class ClientController extends Controller
         Client::create($validated);
 
         return redirect()->route('clients.index')
-            ->with('success', 'Client created successfully.');
+            ->banner('Client created successfully.');
     }
 }

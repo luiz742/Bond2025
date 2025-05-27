@@ -33,7 +33,7 @@ class ServiceController extends Controller
         Service::create($request->only('name'));
 
         return redirect()->route('admin.services.index')
-            ->with('success', 'Service has been created.');
+            ->banner('Service has been created.');
     }
 
     public function show($id)
@@ -62,7 +62,7 @@ class ServiceController extends Controller
         ]);
 
         return redirect()->route('admin.services.index')
-            ->with('success', 'Service has been updated.');
+            ->banner('Service has been updated.');
     }
 
 }

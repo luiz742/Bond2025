@@ -37,7 +37,7 @@ class DocumentController extends Controller
 
         // Retorna para a mesma página Service Show (via Inertia)
         return redirect()->route('admin.services.show', $service)
-                         ->with('success', 'Document added successfully.');
+                         ->banner('Document added successfully.');
     }
 
     // Formulário de edição pode ser via modal ou página separada (a definir)
@@ -56,7 +56,7 @@ class DocumentController extends Controller
         ]);
 
         return redirect()->route('admin.services.show', $document->service_id)
-                         ->with('success', 'Document updated successfully.');
+                         ->banner('Document updated successfully.');
     }
 
     // Deleta documento
@@ -66,6 +66,6 @@ class DocumentController extends Controller
         $document->delete();
 
         return redirect()->route('admin.services.show', $serviceId)
-                         ->with('success', 'Document deleted successfully.');
+                         ->banner('Document deleted successfully.');
     }
 }

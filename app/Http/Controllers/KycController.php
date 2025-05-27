@@ -59,7 +59,7 @@ class KycController extends Controller
 
         $kyc->save();
 
-        return redirect()->back()->with('success', 'KYC enviado com sucesso!');
+        return redirect()->back()->banner('KYC sent!');
     }
 
 }
