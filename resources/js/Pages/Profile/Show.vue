@@ -1,11 +1,22 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue'; // importe o layout admin
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue';
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue';
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
+import { computed } from 'vue';
+
+import { usePage } from '@inertiajs/vue3';
+
+const { props } = usePage();
+const user = props.auth.user;
+
+// Verifica o role para decidir o layout
+const isB2B = computed(() => user.role === 'b2b');
+const isAdmin = computed(() => user.role === 'admin' || user.role === 'super_admin');
 
 defineProps({
     confirmsTwoFactorAuthentication: Boolean,
@@ -14,7 +25,7 @@ defineProps({
 </script>
 
 <template>
-    <AppLayout title="Profile">
+    <component :is="isAdmin ? AdminLayout : AppLayout" :title="'Profile'">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Profile
@@ -53,5 +64,5 @@ defineProps({
                 </template>
             </div>
         </div>
-    </AppLayout>
+    </component>
 </template>
