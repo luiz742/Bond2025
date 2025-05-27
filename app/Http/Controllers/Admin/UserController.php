@@ -114,4 +114,18 @@ class UserController extends Controller
             'services' => $services,
         ]);
     }
+
+    public function destroy(User $user)
+    {
+        // Opcional: impedir que um super admin exclua a si mesmo
+        if (auth()->id() === $user->id) {
+            return redirect()->back()->with('error', 'Você não pode excluir a si mesmo.');
+        }
+
+        // Apaga o usuário
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
 }
