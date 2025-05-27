@@ -39,18 +39,26 @@ class ClientController extends Controller
             'user' => $user,
         ]);
     }
-
     public function create()
     {
         $user = auth()->user();
-        $services = Service::where('id', $user->service_id)
-            ->with('documents')
-            ->get();
+
+        // Cria uma coleção vazia por padrão
+        $services = collect();
+
+        // Só busca serviços se o usuário tiver um service_id
+        if ($user->service_id) {
+            $services = Service::where('id', $user->service_id)
+                ->with('documents')
+                ->get();
+        }
+
         return Inertia::render('Admin/Clients/Create', [
             'services' => $services,
             'user' => $user,
         ]);
     }
+
 
     public function store(Request $request)
     {
@@ -170,7 +178,8 @@ class ClientController extends Controller
             ->banner('Client created successfully.');
     }
 
-    public function destroy(Client $client) {
+    public function destroy(Client $client)
+    {
         $client->delete();
         return redirect()->route('admin.clients.index')
             ->banner('Client deleted successfully.');
