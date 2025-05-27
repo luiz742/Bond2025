@@ -1,5 +1,5 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3'
+import { Link, router, useForm } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 
@@ -7,6 +7,19 @@ defineProps({
     user: Object,
     clients: Object,
 })
+
+// Criando o form do Inertia.js (não há campos visíveis pois é para DELETE)
+const form = useForm({})
+
+// Função de exclusão usando useForm
+const deleteClient = (id) => {
+    if (confirm('Delete Client?')) {
+        form.delete(route('admin.clients.destroy', id), {
+            preserveScroll: true,
+        })
+    }
+}
+
 </script>
 
 <template>
@@ -53,14 +66,20 @@ defineProps({
                             <tr v-for="client in clients.data" :key="client.id"
                                 class="hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.name }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.service.name }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.user.name }}</td>
+                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.service.name }}
+                                </td>
+                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.user.name }}
+                                </td>
                                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ new
                                     Date(client.created_at).toLocaleDateString() }}</td>
                                 <td class="px-4 py-2 text-sm">
                                     <Link :href="`/admin/clients/${client.id}`" class="text-blue-600 hover:underline">
                                     View
-                                    </Link>
+                                    </Link>/
+                                    <button @click="deleteClient(client.id)" class="text-red-600 hover:underline"
+                                        :disabled="form.processing">
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>

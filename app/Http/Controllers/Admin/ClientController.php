@@ -156,5 +156,11 @@ class ClientController extends Controller
         return redirect()->route('admin.myclients')
             ->with('success', 'Client created successfully.');
     }
+
+    public function destroy(Client $client) {
+        $client->delete();
+        return redirect()->route('admin.clients.index')
+            ->with('success', 'Client deleted successfully.');
+    }
 }
 
