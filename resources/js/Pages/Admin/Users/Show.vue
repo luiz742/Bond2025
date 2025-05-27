@@ -84,7 +84,7 @@ const submit = () => {
                   </div>
                   <div>
                     <label for="service_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Service {{ services }}
+                      Service
                     </label>
                     <select id="service_id" v-model="form.service_id"
                       class="mt-1 w-full p-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white
