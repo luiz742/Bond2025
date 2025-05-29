@@ -25,7 +25,7 @@ const submit = () => {
     <AdminLayout :title="`New Client for ${user.name}`">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Add New Client
+                New Client
             </h2>
         </template>
 

@@ -33,7 +33,7 @@ const submit = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <form @submit.prevent="submit" class="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-md shadow">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">User Name</label>
                         <input v-model="form.name" type="text"
                             class="mt-1 w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-900 dark:text-white" />
                         <div v-if="form.errors.name" class="text-red-600 text-sm mt-1">{{ form.errors.name }}</div>

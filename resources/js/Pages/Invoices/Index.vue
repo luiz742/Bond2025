@@ -30,7 +30,6 @@ defineProps({
           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">ID</th>
                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Invoice Number</th>
                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">To</th>
                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Date</th>
@@ -41,10 +40,9 @@ defineProps({
 
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               <tr v-for="invoice in invoices.data" :key="invoice.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ invoice.id }}</td>
                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ invoice.invoice_number }}</td>
                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ invoice.to_name }}</td>
-                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ new Date(invoice.date).toLocaleDateString() }}</td>
+                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ new Date(invoice.date).toLocaleString() }}</td>
                 <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ invoice.currency }}</td>
                 <td class="px-4 py-2 text-sm">
                   <Link :href="`/invoices/${invoice.id}`" class="text-blue-600 hover:underline mr-3">View</Link>
