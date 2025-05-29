@@ -6,7 +6,6 @@ use App\Models\Client;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
@@ -30,14 +29,13 @@ class ClientController extends Controller
             abort(403);
         }
 
-        $client->load(['service.documents', 'files']); // carrega documentos e arquivos enviados
+        $client->load(['service.documents', 'files']);
 
         return Inertia::render('Clients/Show', [
             'client' => $client,
             'user' => $user,
         ]);
     }
-
 
     public function create()
     {
@@ -60,23 +58,11 @@ class ClientController extends Controller
         ]);
 
         $validated['user_id'] = $user->id;
-        $validated['code_reference'] = $this->generateUniqueCodeReference();
+        $validated['code_reference'] = Client::generateUniqueCodeReference();
 
         Client::create($validated);
 
         return redirect()->route('clients.index')
             ->banner('Client created successfully.');
-    }
-
-    /**
-     * Gera um código de 5 dígitos único.
-     */
-    protected function generateUniqueCodeReference(): string
-    {
-        do {
-            $code = str_pad(random_int(0, 99999), 5, '0', STR_PAD_LEFT);
-        } while (Client::where('code_reference', $code)->exists());
-
-        return $code;
     }
 }

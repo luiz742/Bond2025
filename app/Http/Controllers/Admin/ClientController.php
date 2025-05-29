@@ -62,20 +62,53 @@ class ClientController extends Controller
         ]);
     }
 
-    public function admincreate() {
+    public function admincreate()
+    {
+        $authUser = auth()->user();
+        $users = User::with('clients')->get();
+
+        $services = collect();
+
+        if ($authUser->service_id) {
+            $services = Service::where('id', $authUser->service_id)
+                ->with('documents')
+                ->get();
+        }
+
         return Inertia::render('Admin/Clients/AdminCreate', [
-            'clients' => Client::all(),
+            'services' => $services,
+            'users' => $users,
         ]);
     }
+
+    public function adminstore(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id',
+            'service_id' => 'nullable|exists:services,id',
+        ]);
+
+        $client = Client::create([
+            'name' => $request->name,
+            'user_id' => $request->user_id,
+            'service_id' => $user->service_id,
+            'code_reference' => Client::generateUniqueCodeReference(),
+        ]);
+
+        return redirect()->route('admin.clients.index')
+            ->with('success', 'Client created successfully.');
+    }
+
 
     public function create()
     {
         $user = auth()->user();
 
-        // Cria uma coleção vazia por padrão
         $services = collect();
 
-        // Só busca serviços se o usuário tiver um service_id
         if ($user->service_id) {
             $services = Service::where('id', $user->service_id)
                 ->with('documents')
@@ -99,6 +132,7 @@ class ClientController extends Controller
         ]);
 
         $validated['user_id'] = $user->id;
+        $validated['code_reference'] = Client::generateUniqueCodeReference();
 
         Client::create($validated);
 
@@ -108,10 +142,8 @@ class ClientController extends Controller
 
     public function clientuser(Request $request, User $user)
     {
+        $services = Service::with('documents')->get();
 
-        $services = Service::
-            with('documents')
-            ->get();
         return Inertia::render('Admin/Users/ClientUsers', [
             'services' => $services,
             'user' => $user,
@@ -125,8 +157,8 @@ class ClientController extends Controller
             'service_id' => 'nullable|exists:services,id',
         ]);
 
-        // Define o user_id para o user da rota (não o usuário logado)
         $validated['user_id'] = $user->id;
+        $validated['code_reference'] = Client::generateUniqueCodeReference();
 
         Client::create($validated);
 
@@ -137,8 +169,6 @@ class ClientController extends Controller
 
     public function updateDocumentStatus(Request $request, File $file)
     {
-        // dd("Chegou no update status para o arquivo: {$file->id}, status novo: {$request->status}");
-
         $request->validate([
             'status' => 'required|in:pending,approved,rejected',
         ]);
@@ -166,7 +196,6 @@ class ClientController extends Controller
 
     public function mydestroy(Client $client)
     {
-        // Verifica se o usuário autenticado é o dono do cliente
         if (auth()->user()->id !== $client->user_id) {
             return redirect()->back()->dangerBanner('error', "You don't have permission to delete this client.");
         }
@@ -174,7 +203,6 @@ class ClientController extends Controller
         $client->delete();
         return redirect()->back()
             ->banner('Client deleted successfully.');
-
     }
 
     public function mycreate(Request $request)
@@ -200,6 +228,7 @@ class ClientController extends Controller
         ]);
 
         $validated['user_id'] = $user->id;
+        $validated['code_reference'] = Client::generateUniqueCodeReference();
 
         Client::create($validated);
 
@@ -214,4 +243,3 @@ class ClientController extends Controller
             ->banner('Client deleted successfully.');
     }
 }
-
