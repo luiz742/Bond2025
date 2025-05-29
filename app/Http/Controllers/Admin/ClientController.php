@@ -61,6 +61,13 @@ class ClientController extends Controller
             'user' => $user,
         ]);
     }
+
+    public function admincreate() {
+        return Inertia::render('Admin/Clients/AdminCreate', [
+            'clients' => Client::all(),
+        ]);
+    }
+
     public function create()
     {
         $user = auth()->user();

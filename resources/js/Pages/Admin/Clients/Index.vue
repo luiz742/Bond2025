@@ -35,7 +35,7 @@ const deleteClient = (id) => {
                     <div class="mb-4">
                         <div class="mb-4">
                             <PrimaryButton as="span">
-                                <Link :href="route('admin.clients.create')" class="block w-full h-full">
+                                <Link :href="route('admin.clients.admincreate')" class="block w-full h-full">
                                 Add New Client
                                 </Link>
                             </PrimaryButton>
