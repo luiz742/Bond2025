@@ -80,4 +80,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Service::class);
     }
 
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
 }

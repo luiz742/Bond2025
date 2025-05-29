@@ -24,7 +24,7 @@ defineProps({
                         <div class="mb-4">
                             <PrimaryButton as="span">
                                 <Link :href="`/clients/create`" class="block w-full h-full text-white">
-                                New Client
+                                Add New Client
                                 </Link>
                             </PrimaryButton>
                         </div>

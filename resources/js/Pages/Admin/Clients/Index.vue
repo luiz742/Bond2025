@@ -40,7 +40,7 @@ const deleteClient = (id) => {
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Name</th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Service
+                                    Service Description
                                 </th>
                                 <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
                                     Subagent
@@ -66,6 +66,9 @@ const deleteClient = (id) => {
                                 <td class="px-4 py-2 text-sm">
                                     <Link :href="`/admin/clients/${client.id}`" class="text-blue-600 hover:underline">
                                     View
+                                    </Link>/
+                                    <Link :href="`/admin/clients/${client.id}/edit`" class="text-yellow-600 hover:underline">
+                                    Edit
                                     </Link>/
                                     <button @click="deleteClient(client.id)" class="text-red-600 hover:underline"
                                         :disabled="form.processing">

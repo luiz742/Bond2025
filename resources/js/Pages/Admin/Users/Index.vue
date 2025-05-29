@@ -39,11 +39,11 @@ const deleteUser = (id) => {
 
                         <PrimaryButton as="span">
                             <Link v-if="page.url === '/admin/users'" href="/admin/users/create?type=admin"
-                                class="block w-full h-full text-white">
-                            New User
+                                class="block w-full h-full">
+                            Add New User
                             </Link>
-                            <Link v-else href="/admin/subagents/create?type=b2b" class="block w-full h-full text-white">
-                            New Subagent
+                            <Link v-else href="/admin/subagents/create?type=b2b" class="block w-full h-full">
+                            Add New Subagent
                             </Link>
                         </PrimaryButton>
                     </div>

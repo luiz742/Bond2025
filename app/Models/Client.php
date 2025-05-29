@@ -11,9 +11,7 @@ class Client extends Model
         'user_id',
         'service_id',
         'name',
-        // adicione mais campos que você precisar, ex:
-        // 'email',
-        // 'phone',
+        'code_reference',
     ];
 
     // Definindo relacionamento com User (dono do client)
@@ -33,9 +31,9 @@ class Client extends Model
         return $this->hasMany(File::class);
     }
 
-    // (Opcional) Se quiser, pode definir casts para campos especiais, ex:
-    // protected $casts = [
-    //     'created_at' => 'datetime',
-    //     'updated_at' => 'datetime',
-    // ];
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
 }

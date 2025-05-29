@@ -27,6 +27,28 @@ class ClientController extends Controller
         ]);
     }
 
+    public function edit(Client $client)
+    {
+        return Inertia::render('Admin/Clients/Edit', [
+            'client' => $client,
+            'services' => Service::all(),
+        ]);
+    }
+
+    public function update(Request $request, Client $client)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'code_reference' => 'nullable|string|max:255',
+            'service_id' => 'nullable|exists:services,id',
+        ]);
+
+        $client->update($validated);
+
+        return redirect()->route('admin.clients.index')->with('success', 'Client updated successfully.');
+    }
+
+
     public function show(Client $client, $id)
     {
         $user = auth()->user();

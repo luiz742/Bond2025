@@ -17,6 +17,7 @@ use App\Http\Controllers\ClientFileController;
 // Invoices
 use App\Http\Controllers\InvoiceController;
 
+
 Route::get('/', function () {
     $user = Auth::user();
 
@@ -63,6 +64,14 @@ Route::middleware('auth')->group(function () {
 
     // File Upload
     Route::post('/clients/upload-documents', [ClientFileController::class, 'store'])->name('client.upload-documents');
+
+    // Invoices
+    Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
+    Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/{id}/printable', [InvoiceController::class, 'printable'])->name('invoices.printable');
+    Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
+
 });
 
 
@@ -113,6 +122,8 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         Route::post('/clients/user/{user}', [AdminClientController::class, 'clientuserstore'])->name('clients.user.store');
         Route::post('/clients', [AdminClientController::class, 'store'])->name('clients.store');
         Route::delete('/clients/{client}', [AdminClientController::class, 'destroy'])->name('clients.destroy');
+        Route::get('/clients/{client}/edit', [AdminClientController::class, 'edit'])->name('clients.edit');
+        Route::put('/clients/{client}', [AdminClientController::class, 'update'])->name('clients.update');
 
         // My Clients
         Route::get('/my/clients', [AdminClientController::class, 'myclients'])->name('myclients');

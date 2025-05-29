@@ -67,7 +67,7 @@ const deleteClient = (id) => {
 
                     <!-- Botão que abre o modal -->
                     <PrimaryButton @click="openModal" class="mb-4">
-                        New Client
+                        Add New Client
                     </PrimaryButton>
 
                     <!-- Modal customizado com transição e estilo -->

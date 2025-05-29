@@ -35,8 +35,8 @@ const deleteClient = (id) => {
                     <div class="mb-4">
                         <div class="mb-4">
                             <PrimaryButton as="span">
-                                <Link :href="route('admin.myclients.create')" class="block w-full h-full text-white">
-                                New Client
+                                <Link :href="route('admin.myclients.create')" class="block w-full h-full">
+                                Add New Client
                                 </Link>
                             </PrimaryButton>
                         </div>
@@ -64,6 +64,9 @@ const deleteClient = (id) => {
                                 <td class="px-4 py-2 text-sm">
                                     <Link :href="`/admin/clients/${client.id}`" class="text-blue-600 hover:underline">
                                     View
+                                    </Link>/
+                                    <Link :href="`/admin/clients/${client.id}/edit`" class="text-yellow-600 hover:underline">
+                                    Edit
                                     </Link>/
                                     <button @click="deleteClient(client.id)" class="text-red-600 hover:underline"
                                         :disabled="form.processing">

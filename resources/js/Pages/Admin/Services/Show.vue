@@ -77,7 +77,7 @@ const submit = () => {
                             <button @click="openModal"
                                 class="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-1 rounded-md transition"
                                 aria-label="Add new document">
-                                + New Document
+                                Add New Document
                             </button>
                         </div>
 
