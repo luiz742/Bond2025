@@ -60,7 +60,11 @@ class ClientController extends Controller
         $validated['user_id'] = $user->id;
         $validated['code_reference'] = Client::generateUniqueCodeReference();
 
-        Client::create($validated);
+        // Criação do cliente
+        $client = Client::create($validated);
+
+        // Geração da notificação
+        $client->notifyClientCreated();
 
         return redirect()->route('clients.index')
             ->banner('Client created successfully.');

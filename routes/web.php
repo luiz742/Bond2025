@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ClientFileController;
 // Invoices
 use App\Http\Controllers\InvoiceController;
+// Notifications
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('/', function () {
@@ -72,6 +74,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoices/{id}/printable', [InvoiceController::class, 'printable'])->name('invoices.printable');
     Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
 
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{id}/redirect', [NotificationController::class, 'redirectAndMarkRead'])->name('notifications.redirect');
 });
 
 

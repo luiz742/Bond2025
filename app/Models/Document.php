@@ -20,4 +20,9 @@ class Document extends Model
     {
         return $this->hasMany(File::class);
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'document_id');
+    }
 }

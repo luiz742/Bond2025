@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -9,6 +9,10 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { onMounted } from 'vue';
 
+const page = usePage()
+const notifications = page.props.auth?.notifications || []
+const hasUnread = notifications.length > 0
+console.log(notifications);
 const isDark = ref(false)
 
 const toggleTheme = () => {
@@ -110,7 +114,8 @@ const logout = () => {
                             <!-- Clients - apenas para admin -->
                             <div v-if="$page.props.auth.user.role === 'admin'"
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.clients.index')" :active="route().current('admin.clients.index')">
+                                <NavLink :href="route('admin.clients.index')"
+                                    :active="route().current('admin.clients.index')">
                                     Clients
                                 </NavLink>
                             </div>
@@ -118,6 +123,19 @@ const logout = () => {
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
+                            <button v-if="$page.props.auth.user.role === 'admin'" title="notifications" @click="$inertia.get(route('notifications.index'))"
+                                class="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-300"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a1 1 0 10-2 0v1.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+
+                                <!-- Círculo vermelho para notificações não lidas -->
+                                <span v-if="hasUnread"
+                                    class="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900 bg-red-500"></span>
+                            </button>
+
                             <div class="ms-3 relative">
                                 <!-- Botão de alternância de tema -->
                                 <button @click="toggleTheme"

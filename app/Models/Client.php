@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 
 class Client extends Model
 {
-    // Quais campos podem ser preenchidos via mass assignment (ex: create, update)
     protected $fillable = [
         'user_id',
         'service_id',
@@ -23,13 +24,12 @@ class Client extends Model
         return $code;
     }
 
-    // Definindo relacionamento com User (dono do client)
+    // Relacionamentos
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relacionamento com Service (serviço do client)
     public function service()
     {
         return $this->belongsTo(Service::class);
@@ -45,4 +45,25 @@ class Client extends Model
         return $this->hasMany(Invoice::class);
     }
 
+    // Cria notificação ao criar um novo cliente
+    public function notifyClientCreated()
+    {
+        Notification::create([
+            'type' => 'client_created',
+            'client_id' => $this->id,
+            'user_id' => $this->user_id,
+            'service_id' => $this->service_id,
+        ]);
+    }
+
+    // Cria notificação de upload de documento
+    public function notifyDocumentUploaded()
+    {
+        Notification::create([
+            'type' => 'document_uploaded',
+            'client_id' => $this->id,
+            'user_id' => Auth::id(), // ou use $this->user_id se apropriado
+            'service_id' => $this->service_id,
+        ]);
+    }
 }

@@ -7,6 +7,7 @@ import SectionBorder from '@/Components/SectionBorder.vue';
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue';
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
+import KycUploadForm from '@/Pages/Profile/Partials/KycUploadForm.vue';
 import { computed } from 'vue';
 
 import { usePage } from '@inertiajs/vue3';
@@ -36,6 +37,12 @@ defineProps({
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div v-if="$page.props.jetstream.canUpdateProfileInformation">
                     <UpdateProfileInformationForm :user="$page.props.auth.user" />
+
+                    <SectionBorder />
+                </div>
+
+                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
+                    <KycUploadForm :user="$page.props.auth.user" />
 
                     <SectionBorder />
                 </div>
