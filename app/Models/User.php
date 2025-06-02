@@ -85,4 +85,9 @@ class User extends Authenticatable
         return $this->hasMany(Invoice::class);
     }
 
+    public function kyc()
+    {
+        return $this->hasOne(Kyc::class);
+    }
+
 }
