@@ -54,7 +54,6 @@ const documentsForTab = (tabKey) => {
         return doc.client_type === clientTypeToFilter
     })
 
-    console.log(`documentsForTab(${tabKey}):`, docs)
     return docs
 }
 

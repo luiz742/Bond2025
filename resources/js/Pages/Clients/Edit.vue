@@ -66,7 +66,6 @@ const submitFamily = () => {
             familyForm.reset()
         },
         onError: (errors) => {
-            console.log('Erros:', errors)
         }
     });
 }

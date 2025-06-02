@@ -15,15 +15,12 @@ const form = useForm({
 })
 
 const submit = () => {
-    console.log('Enviando formulário...')
-
     form.post(route('admin.clients.user.store', { user: props.user.id }), {
         onSuccess: () => {
-            console.log('Enviado com sucesso!')
             form.reset()
         },
         onError: (errors) => {
-            console.error('Erro ao enviar:', errors)
+            console.error('Error:', errors)
         }
     })
 

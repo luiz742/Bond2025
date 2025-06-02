@@ -22,7 +22,6 @@ const form = useForm({
     contact_number: props.user.contact_number || '',
     tax_registration_number: props.user.tax_registration_number || '',
 });
-
 const verificationLinkSent = ref(null);
 const photoPreview = ref(null);
 const photoInput = ref(null);
@@ -120,7 +119,7 @@ const clearPhotoFileInput = () => {
 
             <!-- Name -->
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel v-if="props.user.role === 'b2b'"  for="name" value="ComapnyName" />
+                <InputLabel v-if="props.user.role === 'b2b'"  for="name" value="Company Name" />
                 <InputLabel v-else for="name" value="Name" />
                 <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full" required
                     autocomplete="name" />

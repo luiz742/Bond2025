@@ -53,8 +53,6 @@ const documentsForTab = (tabKey) => {
     const docs = (props.client.service?.documents || []).filter(doc => {
         return doc.client_type === clientTypeToFilter
     })
-
-    console.log(`documentsForTab(${tabKey}):`, docs)
     return docs
 }
 

@@ -91,14 +91,12 @@ const clientsForSelectedUser = computed(() => {
 function submit() {
   form.post(route('invoices.store'), {
     onError: (errors) => {
-      console.log('Validation errors:', errors);
-      alert("There are errors, check the console.");
     },
     onFinish: () => {
-      console.log('Request finished.');
+
     },
     onSuccess: () => {
-      alert("Invoice created successfully!");
+
     }
   });
 }

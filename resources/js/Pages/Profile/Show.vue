@@ -30,6 +30,7 @@ defineProps({
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Profile
+                {{ user.kyc }}
             </h2>
         </template>
 
@@ -41,7 +42,7 @@ defineProps({
                     <SectionBorder />
                 </div>
 
-                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
+                <div v-if="$page.props.auth.user.role === 'b2b' && $page.props.jetstream.canUpdateProfileInformation">
                     <KycUploadForm :user="$page.props.auth.user" />
 
                     <SectionBorder />

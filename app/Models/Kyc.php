@@ -18,6 +18,8 @@ class Kyc extends Model
         'tax_certificate',
         'passport_copy',
         'id_proof',
+        'proof_of_address',
+
     ];
 
     public function user()

@@ -12,7 +12,7 @@ import { onMounted } from 'vue';
 const page = usePage()
 const notifications = page.props.auth?.notifications || []
 const hasUnread = notifications.length > 0
-console.log(notifications);
+
 const isDark = ref(false)
 
 const toggleTheme = () => {
