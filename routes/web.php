@@ -115,7 +115,8 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
 
         // Clients
         Route::get('/users/{user}/clients', [ClientController::class, 'index'])->name('users.clients.index');
-        Route::put('/files/{file}/status', [AdminClientController::class, 'updateDocumentStatus'])->name('update-document-status');
+        // Route::put('/files/{file}/status', [AdminClientController::class, 'updateDocumentStatus'])->name('update-document-status');
+        Route::post('files/{id}/status', [AdminClientController::class, 'status'])->name('files.status.update');
 
         // Serviços
         Route::get('/services', [ServiceController::class, 'index'])->name('services.index');

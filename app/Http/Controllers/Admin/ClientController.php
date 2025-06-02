@@ -173,18 +173,41 @@ class ClientController extends Controller
             ->banner('Client created successfully.');
     }
 
+    public function status(Request $request, File $file)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,approved,rejected',
+            'id' => 'required',
+        ]);
+
+        $status = $request->input('status');
+        $id = $request->input('id');
+
+        $file = File::findOrFail($id);
+        $file->status = $status;
+        $file->save();
+        // dd($status);
+
+    }
 
     public function updateDocumentStatus(Request $request, File $file)
     {
+        $status = $request->input('status');
+
+        // dd($status);
         $request->validate([
             'status' => 'required|in:pending,approved,rejected',
         ]);
 
-        $file->status = $request->status;
+        $file->status = $request->input('status');
         $file->save();
 
-        return redirect()->back()->banner('Document status updated.');
+        return response()->json([
+            'message' => 'Document status updated.',
+            'file' => $file,
+        ]);
     }
+
 
     // My Clients
     public function myclients()
