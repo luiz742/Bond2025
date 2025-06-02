@@ -38,13 +38,6 @@ const submit = () => {
                         <div v-if="form.errors.name" class="text-red-600 text-sm mt-1">{{ form.errors.name }}</div>
                     </div>
 
-                    <!-- <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Code Reference</label>
-                        <input v-model="form.code_reference" type="text"
-                            class="mt-1 w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-900 dark:text-white" />
-                        <div v-if="form.errors.code_reference" class="text-red-600 text-sm mt-1">{{ form.errors.code_reference }}</div>
-                    </div> -->
-
                     <div class="flex justify-end">
                         <PrimaryButton type="submit">
                             Update Client

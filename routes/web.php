@@ -18,6 +18,12 @@ use App\Http\Controllers\ClientFileController;
 use App\Http\Controllers\InvoiceController;
 // Notifications
 use App\Http\Controllers\NotificationController;
+// Family Members
+use App\Http\Controllers\FamilyMemberController;
+// PDF Vanuatu Documents Download
+use App\Http\Controllers\PdfDownloadController;
+
+
 
 
 Route::get('/', function () {
@@ -63,6 +69,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/clients/create', [ClientController::class, 'create'])->name('clients.create');
     Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
     Route::get('/clients/{client}', [ClientController::class, 'show'])->name('clients.show');
+    Route::get('/clients/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
+    Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
+
+    // Family Members
+    Route::post('/family-members', [FamilyMemberController::class, 'store'])->name('family-members.store');
+
 
     // File Upload
     Route::post('/clients/upload-documents', [ClientFileController::class, 'store'])->name('client.upload-documents');
@@ -74,6 +86,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoices/{id}/printable', [InvoiceController::class, 'printable'])->name('invoices.printable');
     Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
 
+    // PDF Downloads
+    Route::get('/pdfs', [PdfDownloadController::class, 'index'])->name('pdfs.index');
+
+    // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/{id}/redirect', [NotificationController::class, 'redirectAndMarkRead'])->name('notifications.redirect');
 });

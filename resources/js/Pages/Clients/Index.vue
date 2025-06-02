@@ -35,7 +35,7 @@ const filteredClients = computed(() => {
 
                     <div class="mb-4 flex justify-between items-center">
                         <PrimaryButton as="span">
-                            <Link :href="`/clients/create`" class="block w-full h-full text-white">
+                            <Link :href="`/clients/create`">
                                 Add New Client
                             </Link>
                         </PrimaryButton>
@@ -77,6 +77,9 @@ const filteredClients = computed(() => {
                                 <td class="px-4 py-2 text-sm">
                                     <Link :href="`/clients/${client.id}`" class="text-blue-600 hover:underline">
                                         View
+                                    </Link>/
+                                    <Link :href="`/clients/${client.id}/edit`" class="text-blue-600 hover:underline">
+                                        Edit
                                     </Link>
                                 </td>
                             </tr>

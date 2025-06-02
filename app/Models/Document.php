@@ -9,7 +9,7 @@ class Document extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['service_id', 'name', 'type'];
+    protected $fillable = ['service_id', 'name', 'type', 'client_type',];
 
     public function service()
     {

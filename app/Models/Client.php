@@ -56,6 +56,12 @@ class Client extends Model
         ]);
     }
 
+    public function familyMembers()
+    {
+        return $this->hasMany(FamilyMember::class);
+    }
+
+
     // Cria notificação de upload de documento
     public function notifyDocumentUploaded()
     {

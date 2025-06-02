@@ -28,16 +28,18 @@ class DocumentController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:client,company',
+            'client_type' => 'required|string|in:main,spouse,child_1,child_2,child_3,child_4', // ajuste conforme os tipos que quiser permitir
         ]);
 
         $service->documents()->create([
             'name' => $request->name,
             'type' => $request->type,
+            'client_type' => $request->client_type,
         ]);
 
         // Retorna para a mesma página Service Show (via Inertia)
         return redirect()->route('admin.services.show', $service)
-                         ->banner('Document added successfully.');
+            ->banner('Document added successfully.');
     }
 
     // Formulário de edição pode ser via modal ou página separada (a definir)
@@ -56,7 +58,7 @@ class DocumentController extends Controller
         ]);
 
         return redirect()->route('admin.services.show', $document->service_id)
-                         ->banner('Document updated successfully.');
+            ->banner('Document updated successfully.');
     }
 
     // Deleta documento
@@ -66,6 +68,6 @@ class DocumentController extends Controller
         $document->delete();
 
         return redirect()->route('admin.services.show', $serviceId)
-                         ->banner('Document deleted successfully.');
+            ->banner('Document deleted successfully.');
     }
 }
