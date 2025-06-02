@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useForm } from '@inertiajs/vue3'
-import AppLayout from '@/Layouts/AppLayout.vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import InputError from '@/Components/InputError.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
@@ -135,7 +135,7 @@ const statusSubmit = (status, id) => {
 </script>
 
 <template>
-    <AppLayout :title="`Client: ${client.name}`">
+    <AdminLayout :title="`Client: ${client.name}`">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Client - {{ client.name }}
@@ -288,5 +288,5 @@ const statusSubmit = (status, id) => {
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </AdminLayout>
 </template>
