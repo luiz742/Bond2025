@@ -235,10 +235,6 @@ const logout = () => {
                                             Manage Account
                                         </div>
 
-                                         <DropdownLink :href="route('kyc.index')">
-                                            KYC
-                                        </DropdownLink>
-
                                         <DropdownLink :href="route('profile.show')">
                                             Profile
                                         </DropdownLink>

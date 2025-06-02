@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\File;
 use App\Models\User;
+use App\Models\FamilyMember;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -29,9 +30,12 @@ class ClientController extends Controller
 
     public function edit(Client $client)
     {
+        $familyMembers = FamilyMember::where('client_id', $client->id)->get();
+
         return Inertia::render('Admin/Clients/Edit', [
             'client' => $client,
             'services' => Service::all(),
+            'familyMembers' => $familyMembers,
         ]);
     }
 
@@ -48,17 +52,20 @@ class ClientController extends Controller
         return redirect()->route('admin.clients.index')->with('success', 'Client updated successfully.');
     }
 
-
     public function show(Client $client, $id)
     {
         $user = auth()->user();
+
         $client = Client::where('id', $id)
             ->with(['service.documents', 'files', 'user'])
             ->firstOrFail();
 
+        $familyMembers = $client->familyMembers()->get(['id', 'label']);
+
         return Inertia::render('Admin/Clients/Show', [
             'client' => $client,
             'user' => $user,
+            'familyMembers' => $familyMembers,
         ]);
     }
 
