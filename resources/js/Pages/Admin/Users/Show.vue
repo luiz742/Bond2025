@@ -158,6 +158,7 @@ const deleteClient = (id) => {
                                     <Link :href="`/admin/clients/${client.id}`" class="text-blue-600 hover:underline">
                                     View
                                     </Link>/
+                                    <Link :href="`/admin/clients/${client.id}/edit`" class="text-yellow-600 hover:underline">Edit</Link> /
                                     <button @click="deleteClient(client.id)" class="text-red-600 hover:underline"
                                         :disabled="form.processing">
                                         Delete
