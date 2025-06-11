@@ -118,5 +118,4 @@ class ClientController extends Controller
         return redirect()->route('clients.show', $client)
             ->banner('Client updated successfully.');
     }
-
 }

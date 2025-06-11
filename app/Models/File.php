@@ -14,6 +14,7 @@ class File extends Model
         'document_id',
         'path',
         'status',
+        'rejection_reason',
     ];
 
     public function client()

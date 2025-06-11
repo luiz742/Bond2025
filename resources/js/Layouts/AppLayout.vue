@@ -88,7 +88,7 @@ const logout = () => {
 
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('pdfs.index')" :active="route().current('profile.show')">
-                                    Vanuatu Documents
+                                    CBI Documents
                                 </NavLink>
                             </div>
 

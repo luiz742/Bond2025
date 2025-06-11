@@ -40,6 +40,7 @@ const submit = () => {
                                 type="text"
                                 class="mt-2 block w-full"
                                 autocomplete="off"
+                                required
                             />
                             <InputError :message="form.errors.name" class="mt-2" />
                         </div>
@@ -52,6 +53,7 @@ const submit = () => {
                                 type="text"
                                 class="mt-2 block w-full"
                                 autocomplete="off"
+                                required
                             />
                             <InputError :message="form.errors.country" class="mt-2" />
                         </div>

@@ -178,16 +178,19 @@ class ClientController extends Controller
         $request->validate([
             'status' => 'required|in:pending,approved,rejected',
             'id' => 'required',
+            'rejection_reason' => 'nullable|string|max:1000',
         ]);
 
-        $status = $request->input('status');
-        $id = $request->input('id');
+        $file = File::findOrFail($request->id);
+        $file->status = $request->status;
 
-        $file = File::findOrFail($id);
-        $file->status = $status;
+        if ($request->status === 'rejected') {
+            $file->rejection_reason = $request->rejection_reason;
+        } else {
+            $file->rejection_reason = null;
+        }
+
         $file->save();
-        // dd($status);
-
     }
 
     public function updateDocumentStatus(Request $request, File $file)

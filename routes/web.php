@@ -92,6 +92,13 @@ Route::middleware('auth')->group(function () {
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/{id}/redirect', [NotificationController::class, 'redirectAndMarkRead'])->name('notifications.redirect');
+
+    Route::post('/files/reupload/{id}', [ClientFileController::class, 'reupload'])->name('files.reupload');
+    // Route::put('/clients/{client}/documents/{file}', [ClientFileController::class, 'update'])->name('client.update-document');
+    Route::match(['put', 'post'], '/clients/{client}/documents/{id}', [ClientFileController::class, 'update'])->name('client.update-document');
+
+
+
 });
 
 

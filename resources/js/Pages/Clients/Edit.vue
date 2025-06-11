@@ -19,7 +19,7 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.put(route('admin.clients.update', props.client.id))
+    form.put(route('clients.update', props.client.id))
 }
 
 // Modal de família

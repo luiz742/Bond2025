@@ -1,10 +1,11 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import useDocumentUpload from '@/Composables/useDocumentUpload'
+import useDocumentStatus from '@/Composables/useDocumentStatus'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import InputError from '@/Components/InputError.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
+import useDocumentUpdate from '@/Composables/useDocumentUpdate'
 
 const props = defineProps({
     user: Object,
@@ -12,126 +13,33 @@ const props = defineProps({
     familyMembers: Array,
 })
 
-// Status possíveis
-const statusOptions = ['pending', 'approved', 'rejected']
+const {
+    form: updateForm,
+    updating,
+    update
+} = useDocumentUpdate()
 
-// Aba ativa
-const activeTab = ref('client')
+const {
+    activeTab,
+    tabs,
+    filterClientText,
+    filterCompanyText,
+    filteredClientDocuments,
+    filteredCompanyDocuments,
+    onFileChange,
+    submit,
+    getFileForDocument,
+    getFileUrl,
+    form
+} = useDocumentUpload(props)
 
-// Filtros separados para cada tabela
-const filterClientText = ref('')
-const filterCompanyText = ref('')
-
-// Limpa filtro client ao mudar aba
-watch(activeTab, () => {
-    filterClientText.value = ''
-})
-
-// Monta abas
-const tabs = computed(() => {
-    return [
-        { key: 'client', label: 'Client' },
-        ...props.familyMembers.map(m => ({
-            key: m.label.toLowerCase(),
-            label: m.label.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-        }))
-    ]
-})
-
-// Função que pega documentos da aba
-const documentsForTab = (tabKey) => {
-    const mapTabToClientType = {
-        client: 'main',
-        spouse: 'spouse',
-        child_1: 'child_1',
-    }
-    const clientTypeToFilter = mapTabToClientType[tabKey] || tabKey
-
-    return (props.client.service?.documents || []).filter(doc => doc.client_type === clientTypeToFilter)
-}
-
-// Documentos da empresa
-const companyDocuments = computed(() =>
-    (props.client.service?.documents || []).filter(doc => doc.type.toLowerCase() === 'company')
-)
-
-// Documentos filtrados client/family
-const filteredClientDocuments = computed(() => {
-    return documentsForTab(activeTab.value).filter(doc =>
-        doc.name.toLowerCase().includes(filterClientText.value.toLowerCase())
-    )
-})
-
-// Documentos filtrados company
-const filteredCompanyDocuments = computed(() => {
-    if (!filterCompanyText.value) return companyDocuments.value
-    return companyDocuments.value.filter(doc =>
-        doc.name.toLowerCase().includes(filterCompanyText.value.toLowerCase())
-    )
-})
-
-// Formulário upload arquivos
-const form = useForm({
-    client_id: props.client.id,
-    files: {},
-})
-
-// Atualiza arquivo ao selecionar
-const onFileChange = (event, documentId) => {
-    const file = event.target.files[0]
-    if (file) {
-        form.files[documentId] = file
-    } else {
-        delete form.files[documentId]
-    }
-}
-
-// Envia arquivo individual
-const submit = (documentId) => {
-    if (!form.files[documentId]) return
-
-    const dataToSend = {
-        client_id: form.client_id,
-        files: {
-            [documentId]: form.files[documentId],
-        },
-    }
-
-    form.post(route('client.upload-documents'), {
-        data: dataToSend,
-        onSuccess: () => {
-            delete form.files[documentId]
-        },
-    })
-}
-
-// Retorna arquivo enviado (se existir) para um documento
-const getFileForDocument = (documentId) => {
-    return props.client.files.find(f => f.document_id === documentId)
-}
-
-// Retorna URL do arquivo
-const getFileUrl = (file) => {
-    if (!file) return null
-    return `/storage/${file.path}`
-}
-
-const statusForm = useForm({
-    status: '',
-    id: null,
-})
-
-const statusSubmit = (status, id) => {
-    statusForm.status = status
-    statusForm.id = id
-
-    statusForm.post(route('admin.files.status.update', id), {
-        preserveScroll: true,
-        onSuccess: () => console.log('Status atualizado com sucesso'),
-        onError: (errors) => console.error(errors),
-    })
-}
-
+const {
+    statusForm,
+    statusSubmit,
+    showRejectionModal,
+    openRejectionModal,
+    submitRejection
+} = useDocumentStatus()
 </script>
 
 <template>
@@ -172,6 +80,7 @@ const statusSubmit = (status, id) => {
                                     <template v-if="getFileForDocument(document.id)">
                                         <div
                                             class="text-sm text-gray-700 dark:text-gray-300 flex items-center space-x-4">
+
                                             <!-- Status -->
                                             <div class="flex items-center space-x-2">
                                                 <span
@@ -188,7 +97,7 @@ const statusSubmit = (status, id) => {
                                                 </span>
                                             </div>
 
-                                            <!-- Botões (aparecem só se status for pending) -->
+                                            <!-- Botões se status for "pending" -->
                                             <div v-if="getFileForDocument(document.id)?.status === 'pending'"
                                                 class="flex space-x-3">
                                                 <PrimaryButton
@@ -201,13 +110,14 @@ const statusSubmit = (status, id) => {
                                                 <PrimaryButton
                                                     class="px-4 py-1 bg-red-600 hover:bg-red-700 transition rounded text-sm"
                                                     :disabled="form.processing"
-                                                    @click.prevent="statusSubmit('rejected', getFileForDocument(document.id).id)">
+                                                    @click.prevent="openRejectionModal(getFileForDocument(document.id).id)">
                                                     Reject
                                                 </PrimaryButton>
                                             </div>
 
-                                            <!-- Link para ver arquivo -->
-                                            <a :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
+                                            <!-- Link para ver arquivo se status for diferente de 'rejected' -->
+                                            <a v-if="getFileForDocument(document.id)?.status !== 'rejected'"
+                                                :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
                                                 class="flex items-center space-x-1 text-blue-500 hover:text-blue-700 underline whitespace-nowrap">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -218,9 +128,43 @@ const statusSubmit = (status, id) => {
                                                 </svg>
                                                 <span>View File</span>
                                             </a>
+
+                                            <!-- Se status do arquivo for 'rejected', mostra botão e input para reenvio -->
+                                            <div v-if="getFileForDocument(document.id)?.status === 'rejected'"
+                                                class="mt-2">
+
+                                                <input type="file" :id="`reupload-${document.id}`"
+                                                    @change="(e) => onFileChange(e, document.id)"
+                                                    class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md cursor-pointer bg-white dark:bg-gray-700 focus:outline-none" />
+
+                                                <PrimaryButton class="mt-2"
+                                                    :disabled="form.processing || !form.files[document.id]"
+                                                    @click.prevent="() => {
+                                                        const fileEntry = getFileForDocument(document.id);
+                                                        if (fileEntry?.id) {
+                                                            update(client.id, fileEntry.id, form.files[document.id]);
+                                                        } else {
+                                                            alert('Arquivo não encontrado para reenvio.');
+                                                        }
+                                                    }">
+                                                    Reupload
+                                                </PrimaryButton>
+
+                                                <InputError :message="form.errors[`files.${document.id}`]"
+                                                    class="mt-2" />
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="flex items-center space-x-2">
+                                            <span v-if="getFileForDocument(document.id)?.status === 'rejected'"
+                                                class=" text-sm">
+                                                <span class="text-red-500">Rejection Reason: </span>
+                                                {{ getFileForDocument(document.id)?.rejection_reason || 'N/A' }}
+                                            </span>
                                         </div>
                                     </template>
-
                                     <template v-else>
                                         <input :id="`doc-${document.id}`" type="file"
                                             @change="e => onFileChange(e, document.id)"
@@ -243,7 +187,7 @@ const statusSubmit = (status, id) => {
                 <!-- DOCUMENTOS DA EMPRESA -->
                 <div class="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6">
                     <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                        Documents Issued By {{ client.service.country }} Government
+                        Documents Issued By {{ client.service?.country || '' }} Government
                     </h4>
 
                     <input v-model="filterCompanyText" type="text" placeholder="Filter company documents..."
@@ -288,5 +232,29 @@ const statusSubmit = (status, id) => {
                 </div>
             </div>
         </div>
+        <!-- Modal for rejection reason -->
+        <template v-if="showRejectionModal">
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+                    <h2 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">Reason for Rejection</h2>
+
+                    <textarea v-model="statusForm.rejection_reason"
+                        class="w-full h-24 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
+                        placeholder="Enter the reason for rejection..."></textarea>
+
+                    <InputError :message="statusForm.errors.rejection_reason" class="mt-2" />
+
+                    <div class="mt-4 flex justify-end space-x-2">
+                        <PrimaryButton @click="showRejectionModal = false" class="bg-gray-500 hover:bg-gray-600">
+                            Cancel
+                        </PrimaryButton>
+                        <PrimaryButton @click="submitRejection" :disabled="statusForm.processing"
+                            class="bg-red-600 hover:bg-red-700">
+                            Submit Rejection
+                        </PrimaryButton>
+                    </div>
+                </div>
+            </div>
+        </template>
     </AdminLayout>
 </template>
