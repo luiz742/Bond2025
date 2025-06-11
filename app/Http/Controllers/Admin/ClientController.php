@@ -49,7 +49,7 @@ class ClientController extends Controller
 
         $client->update($validated);
 
-        return redirect()->route('admin.clients.index')->with('success', 'Client updated successfully.');
+        return redirect()->back()->banner('Client updated successfully.');
     }
 
     public function show(Client $client, $id)
