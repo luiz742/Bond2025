@@ -10,14 +10,14 @@ class PdfDownloadController extends Controller
 {
     public function index()
     {
-        // Supondo que os arquivos estejam em storage/app/public/pdfs
-        $files = Storage::disk('public')->files('pdfs');
+        // Acessa arquivos diretamente em public/images
+        $files = File::files(public_path('images'));
 
-        // Formata os arquivos para o front
+        // Mapeia os arquivos para o frontend
         $pdfFiles = collect($files)->map(function ($file) {
             return [
-                'name' => basename($file),
-                'url' => Storage::url($file),
+                'name' => $file->getFilename(),
+                'url' => asset('images/' . $file->getFilename()), // gera URL pública
             ];
         });
 
