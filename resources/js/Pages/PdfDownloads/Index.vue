@@ -4,15 +4,15 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 
 const pdfFiles = [
-    { name: 'NBV Standard VDSP Checklist', url: '/storage/pdfs/NBVSTANDARDVDSPCHECKLIST.pdf' },
-    { name: 'Passport Application Form', url: '/storage/pdfs/PASSPORTAPPLICATIONFOR.pdf' },
-    { name: 'Asset Report', url: '/storage/pdfs/ASSET-REPORT.pdf' },
-    { name: 'Nomination Checklist Form', url: '/storage/pdfs/NominationChecklistform.pdf' },
-    { name: 'Nomination Form for Principal Applicant', url: '/storage/pdfs/Nominationformforprincipalapplicant.pdf' },
-    { name: 'Vanuatu Document Checklist', url: '/storage/pdfs/Vanuatu_Document_Checklist.pdf' },
-    { name: 'Spouse Form', url: '/storage/pdfs/SPOUSE-FORM.pdf' },
-    { name: 'Child Form', url: '/storage/pdfs/CHILD-FORM.pdf' },
-    { name: 'Dependent Form', url: '/storage/pdfs/DEPENDENT-FORM.pdf' },
+    { name: 'NBV Standard VDSP Checklist', url: '/images/NBVSTANDARDVDSPCHECKLIST.pdf' },
+    { name: 'Passport Application Form', url: '/images/PASSPORTAPPLICATIONFOR.pdf' },
+    { name: 'Asset Report', url: '/images/ASSET-REPORT.pdf' },
+    { name: 'Nomination Checklist Form', url: '/images/NominationChecklistform.pdf' },
+    { name: 'Nomination Form for Principal Applicant', url: '/images/Nominationformforprincipalapplicant.pdf' },
+    { name: 'Vanuatu Document Checklist', url: '/images/Vanuatu_Document_Checklist.pdf' },
+    { name: 'Spouse Form', url: '/images/SPOUSE-FORM.pdf' },
+    { name: 'Child Form', url: '/images/CHILD-FORM.pdf' },
+    { name: 'Dependent Form', url: '/images/DEPENDENT-FORM.pdf' },
 ]
 
 const search = ref('')
