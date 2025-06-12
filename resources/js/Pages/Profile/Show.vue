@@ -50,10 +50,10 @@ defineProps({
                 <div v-if="$page.props.jetstream.canUpdatePassword">
                     <UpdatePasswordForm class="mt-10 sm:mt-0" />
 
-                    <SectionBorder />
+                    <!-- <SectionBorder /> -->
                 </div>
 
-                <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" />
+                <!-- <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" /> -->
             </div>
         </div>
     </component>

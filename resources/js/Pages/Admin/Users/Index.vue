@@ -2,8 +2,12 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import { Link, usePage, useForm, router } from '@inertiajs/vue3'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
+import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue'
+import { ref } from 'vue'
 
 const page = usePage()
+const showDeleteModal = ref(false)
+const userToDelete = ref({ id: null, name: '' })
 
 defineProps({
     users: Object,
@@ -14,12 +18,18 @@ defineProps({
 const form = useForm({})
 
 // Função de exclusão usando useForm
-const deleteUser = (id) => {
-    if (confirm('Tem certeza que deseja deletar este usuário?')) {
-        form.delete(`/admin/users/${id}`, {
-            preserveScroll: true,
-        })
-    }
+const confirmDelete = (user) => {
+    userToDelete.value = user
+    showDeleteModal.value = true
+}
+
+const deleteUser = () => {
+    form.delete(`/admin/users/${userToDelete.value.id}`, {
+        preserveScroll: true,
+        onFinish: () => {
+            showDeleteModal.value = false
+        }
+    })
 }
 </script>
 
@@ -85,11 +95,10 @@ const deleteUser = (id) => {
                                             class="text-blue-600 hover:underline">
                                         Edit
                                         </Link> /
-                                        <button @click="deleteUser(user.id)" class="text-red-600 hover:underline"
+                                        <button @click="confirmDelete(user)" class="text-red-600 hover:underline"
                                             :disabled="form.processing">
                                             Delete
                                         </button>
-
                                     </td>
                                 </tr>
                             </tbody>
@@ -102,5 +111,8 @@ const deleteUser = (id) => {
                 </div>
             </div>
         </div>
+        <ConfirmDeleteModal :show="showDeleteModal" :itemName="userToDelete.name" @cancel="showDeleteModal = false"
+            @confirm="deleteUser" />
+
     </AdminLayout>
 </template>
