@@ -31,8 +31,8 @@ const form = useForm({
     proof_of_address: null,
 });
 
-const isB2B = computed(() => props.user.kyc.type === 'b2b');
-const isB2C = computed(() => props.user.kyc.type === 'b2c');
+const isB2B = computed(() => props.user.kyc?.type === 'b2b');
+const isB2C = computed(() => props.user.kyc?.type === 'b2c');
 
 const handleFileChange = (event, field) => {
     const file = event.target.files[0];
@@ -67,111 +67,124 @@ const submit = () => {
         </template>
 
         <template #form>
-            <template v-if="isB2B">
-                <!-- Company Trade License -->
-                <div class="col-span-6 sm:col-span-4">
-                    <InputLabel for="company_trade_license" value="Company Trade License" />
-                    <div v-if="user.kyc?.company_trade_license" class="mt-2">
-                        <a :href="`/storage/${user.kyc.company_trade_license}`" target="_blank" class="text-blue-600 underline hover:text-blue-800">
-                            View Uploaded File
-                        </a>
+            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-12"> -->
+                <!-- B2B Column -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-semibold border-b pb-2">B2B Documents</h3>
+
+                    <!-- Campo: Company Trade License -->
+                    <div class="space-y-2">
+                        <InputLabel for="company_trade_license" value="Company Trade License" />
+                        <div v-if="user.kyc?.company_trade_license">
+                            <a :href="`/storage/${user.kyc.company_trade_license}`" target="_blank"
+                                class="text-blue-600 underline hover:text-blue-800">
+                                View Uploaded File
+                            </a>
+                        </div>
+                        <div v-else>
+                            <input id="company_trade_license" type="file" accept=".pdf,.jpg,.png"
+                                ref="fileInputRefs.company_trade_license"
+                                class="block w-full text-sm file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
+                                @change="e => handleFileChange(e, 'company_trade_license')" />
+                            <InputError :message="form.errors.company_trade_license" class="mt-1" />
+                        </div>
                     </div>
-                    <div v-else>
-                        <input id="company_trade_license" type="file" accept=".pdf,.jpg,.png"
-                            ref="fileInputRefs.company_trade_license"
-                            class="mt-2 block w-full text-sm text-gray-900 dark:text-white file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
-                            @change="e => handleFileChange(e, 'company_trade_license')" />
-                        <InputError :message="form.errors.company_trade_license" class="mt-2" />
+
+                    <!-- Campo: Tax Certificate -->
+                    <div class="space-y-2">
+                        <InputLabel for="tax_certificate" value="Tax Certificate" />
+                        <div v-if="user.kyc?.tax_certificate">
+                            <a :href="`/storage/${user.kyc.tax_certificate}`" target="_blank"
+                                class="text-blue-600 underline hover:text-blue-800">
+                                View Uploaded File
+                            </a>
+                        </div>
+                        <div v-else>
+                            <input id="tax_certificate" type="file" accept=".pdf,.jpg,.png"
+                                ref="fileInputRefs.tax_certificate"
+                                class="block w-full text-sm file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
+                                @change="e => handleFileChange(e, 'tax_certificate')" />
+                            <InputError :message="form.errors.tax_certificate" class="mt-1" />
+                        </div>
+                    </div>
+
+                    <!-- Campo: Company Utility Bill -->
+                    <div class="space-y-2">
+                        <InputLabel for="proof_of_address" value="Company Utility Bill" />
+                        <div v-if="user.kyc?.proof_of_address">
+                            <a :href="`/storage/${user.kyc.proof_of_address}`" target="_blank"
+                                class="text-blue-600 underline hover:text-blue-800">
+                                View Uploaded File
+                            </a>
+                        </div>
+                        <div v-else>
+                            <input id="proof_of_address" type="file" accept=".pdf,.jpg,.png"
+                                ref="fileInputRefs.proof_of_address"
+                                class="block w-full text-sm file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
+                                @change="e => handleFileChange(e, 'proof_of_address')" />
+                            <InputError :message="form.errors.proof_of_address" class="mt-1" />
+                        </div>
                     </div>
                 </div>
 
-                <!-- Tax Certificate -->
-                <div class="col-span-6 sm:col-span-4">
-                    <InputLabel for="tax_certificate" value="Tax Certificate" />
-                    <div v-if="user.kyc?.tax_certificate" class="mt-2">
-                        <a :href="`/storage/${user.kyc.tax_certificate}`" target="_blank" class="text-blue-600 underline hover:text-blue-800">
-                            View Uploaded File
-                        </a>
-                    </div>
-                    <div v-else>
-                        <input id="tax_certificate" type="file" accept=".pdf,.jpg,.png"
-                            ref="fileInputRefs.tax_certificate"
-                            class="mt-2 block w-full text-sm text-gray-900 dark:text-white file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
-                            @change="e => handleFileChange(e, 'tax_certificate')" />
-                        <InputError :message="form.errors.tax_certificate" class="mt-2" />
-                    </div>
-                </div>
+                <!-- B2C Column -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-semibold border-b pb-2">B2C Documents</h3>
 
-                <!-- Proof of Address -->
-                <div class="col-span-6 sm:col-span-4">
-                    <InputLabel for="proof_of_address" value="Company Utility Bill" />
-                    <div v-if="user.kyc?.proof_of_address" class="mt-2">
-                        <a :href="`/storage/${user.kyc.proof_of_address}`" target="_blank" class="text-blue-600 underline hover:text-blue-800">
-                            View Uploaded File
-                        </a>
+                    <!-- Campo: Passport Copy -->
+                    <div class="space-y-2">
+                        <InputLabel for="passport_copy" value="Passport Copy" />
+                        <div v-if="user.kyc?.passport_copy">
+                            <a :href="`/storage/${user.kyc.passport_copy}`" target="_blank"
+                                class="text-blue-600 underline hover:text-blue-800">
+                                View Uploaded File
+                            </a>
+                        </div>
+                        <div v-else>
+                            <input id="passport_copy" type="file" accept=".pdf,.jpg,.png"
+                                ref="fileInputRefs.passport_copy"
+                                class="block w-full text-sm file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
+                                @change="e => handleFileChange(e, 'passport_copy')" />
+                            <InputError :message="form.errors.passport_copy" class="mt-1" />
+                        </div>
                     </div>
-                    <div v-else>
-                        <input id="proof_of_address" type="file" accept=".pdf,.jpg,.png"
-                            ref="fileInputRefs.proof_of_address"
-                            class="mt-2 block w-full text-sm text-gray-900 dark:text-white file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
-                            @change="e => handleFileChange(e, 'proof_of_address')" />
-                        <InputError :message="form.errors.proof_of_address" class="mt-2" />
-                    </div>
-                </div>
-            </template>
 
-            <template v-if="isB2C">
-                <!-- Passport Copy -->
-                <div class="col-span-6 sm:col-span-4">
-                    <InputLabel for="passport_copy" value="Passport Copy" />
-                    <div v-if="user.kyc?.passport_copy" class="mt-2">
-                        <a :href="`/storage/${user.kyc.passport_copy}`" target="_blank" class="text-blue-600 underline hover:text-blue-800">
-                            View Uploaded File
-                        </a>
+                    <!-- Campo: ID Proof -->
+                    <div class="space-y-2">
+                        <InputLabel for="id_proof" value="ID Proof" />
+                        <div v-if="user.kyc?.id_proof">
+                            <a :href="`/storage/${user.kyc.id_proof}`" target="_blank"
+                                class="text-blue-600 underline hover:text-blue-800">
+                                View Uploaded File
+                            </a>
+                        </div>
+                        <div v-else>
+                            <input id="id_proof" type="file" accept=".pdf,.jpg,.png" ref="fileInputRefs.id_proof"
+                                class="block w-full text-sm file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
+                                @change="e => handleFileChange(e, 'id_proof')" />
+                            <InputError :message="form.errors.id_proof" class="mt-1" />
+                        </div>
                     </div>
-                    <div v-else>
-                        <input id="passport_copy" type="file" accept=".pdf,.jpg,.png"
-                            ref="fileInputRefs.passport_copy"
-                            class="mt-2 block w-full text-sm text-gray-900 dark:text-white file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
-                            @change="e => handleFileChange(e, 'passport_copy')" />
-                        <InputError :message="form.errors.passport_copy" class="mt-2" />
-                    </div>
-                </div>
 
-                <!-- ID Proof -->
-                <div class="col-span-6 sm:col-span-4">
-                    <InputLabel for="id_proof" value="ID Proof" />
-                    <div v-if="user.kyc?.id_proof" class="mt-2">
-                        <a :href="`/storage/${user.kyc.id_proof}`" target="_blank" class="text-blue-600 underline hover:text-blue-800">
-                            View Uploaded File
-                        </a>
-                    </div>
-                    <div v-else>
-                        <input id="id_proof" type="file" accept=".pdf,.jpg,.png"
-                            ref="fileInputRefs.id_proof"
-                            class="mt-2 block w-full text-sm text-gray-900 dark:text-white file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
-                            @change="e => handleFileChange(e, 'id_proof')" />
-                        <InputError :message="form.errors.id_proof" class="mt-2" />
-                    </div>
-                </div>
-
-                <!-- Proof of Address -->
-                <div class="col-span-6 sm:col-span-4">
-                    <InputLabel for="proof_of_address" value="Proof of Address" />
-                    <div v-if="user.kyc?.proof_of_address" class="mt-2">
-                        <a :href="`/storage/${user.kyc.proof_of_address}`" target="_blank" class="text-blue-600 underline hover:text-blue-800">
-                            View Uploaded File
-                        </a>
-                    </div>
-                    <div v-else>
-                        <input id="proof_of_address" type="file" accept=".pdf,.jpg,.png"
-                            ref="fileInputRefs.proof_of_address"
-                            class="mt-2 block w-full text-sm text-gray-900 dark:text-white file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
-                            @change="e => handleFileChange(e, 'proof_of_address')" />
-                        <InputError :message="form.errors.proof_of_address" class="mt-2" />
+                    <!-- Campo: Proof of Address -->
+                    <div class="space-y-2">
+                        <InputLabel for="proof_of_address" value="Proof of Address" />
+                        <div v-if="user.kyc?.proof_of_address">
+                            <a :href="`/storage/${user.kyc.proof_of_address}`" target="_blank"
+                                class="text-blue-600 underline hover:text-blue-800">
+                                View Uploaded File
+                            </a>
+                        </div>
+                        <div v-else>
+                            <input id="proof_of_address" type="file" accept=".pdf,.jpg,.png"
+                                ref="fileInputRefs.proof_of_address"
+                                class="block w-full text-sm file:bg-blue-50 file:text-blue-700 file:px-4 file:py-2 file:rounded file:border-0 hover:file:bg-blue-100"
+                                @change="e => handleFileChange(e, 'proof_of_address')" />
+                            <InputError :message="form.errors.proof_of_address" class="mt-1" />
+                        </div>
                     </div>
                 </div>
-            </template>
+            <!-- </div> -->
         </template>
 
         <template #actions>

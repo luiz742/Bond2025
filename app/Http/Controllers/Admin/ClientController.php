@@ -52,6 +52,19 @@ class ClientController extends Controller
         return redirect()->back()->banner('Client updated successfully.');
     }
 
+    public function updateFamilyMember(Request $request, FamilyMember $familyMember)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $familyMember->update([
+            'name' => $validated['name'],
+        ]);
+
+        return redirect()->back()->banner('Family member updated successfully.');
+    }
+
     public function show(Client $client, $id)
     {
         $user = auth()->user();

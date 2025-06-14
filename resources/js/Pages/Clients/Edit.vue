@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useForm } from '@inertiajs/vue3'
-import AppLayout from '@/Layouts/AppLayout.vue'
+import AdminLayout from '@/Layouts/AdminLayout.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 
 const props = defineProps({
@@ -10,7 +10,6 @@ const props = defineProps({
     familyMembers: Object,
 })
 
-// Form principal de edição do cliente
 const form = useForm({
     name: props.client.name,
     code_reference: props.client.code_reference || '',
@@ -19,16 +18,14 @@ const form = useForm({
 })
 
 const submit = () => {
-    form.put(route('clients.update', props.client.id))
+    form.put(route('admin.clients.update', props.client.id))
 }
 
-// Modal de família
+// Modal de membros da família
 const showModal = ref(false)
+const editingMember = ref(null)
+const familyMembers = ref([...props.familyMembers])
 
-// Lista reativa de membros da família
-const familyMembers = ref(props.familyMembers || [])
-
-// Lista completa de possíveis labels
 const allLabels = [
     { value: 'spouse', text: 'Spouse' },
     { value: 'child_1', text: 'Child 1' },
@@ -37,10 +34,9 @@ const allLabels = [
     { value: 'child_4', text: 'Child 4' },
 ]
 
-// Computed para filtrar os labels já usados
 const availableLabels = computed(() => {
-    const usedLabels = familyMembers.value.map(m => m.label)
-    return allLabels.filter(label => !usedLabels.includes(label.value))
+    const used = familyMembers.value.map(f => f.label)
+    return allLabels.filter(l => !used.includes(l.value) || (editingMember.value && editingMember.value.label === l.value))
 })
 
 const familyForm = useForm({
@@ -49,34 +45,65 @@ const familyForm = useForm({
     label: '',
 })
 
-const submitFamily = () => {
-    familyForm.post(route('family-members.store'), {
-        onSuccess: () => {
-            // Fecha modal
-            showModal.value = false
+const openEditModal = (member) => {
+    editingMember.value = { ...member }
+    showModal.value = true
+}
 
-            // Adiciona na lista local imediatamente
-            familyMembers.value.push({
-                id: Date.now(), // gera um id temporário único (exemplo)
-                name: familyForm.name,
-                label: familyForm.label,
-            })
-
-            // Reseta o form
-            familyForm.reset()
-        },
-        onError: (errors) => {
-        }
-    });
+const openCreateModal = () => {
+    editingMember.value = null
+    familyForm.reset()
+    showModal.value = true
 }
 
 const closeModal = () => {
     showModal.value = false
+    editingMember.value = null
+    familyForm.reset()
 }
+
+const submitFamily = () => {
+    familyForm.post(route('family-members.store'), {
+        onSuccess: () => {
+            familyMembers.value.push({
+                id: Date.now(),
+                name: familyForm.name,
+                label: familyForm.label,
+            })
+            closeModal()
+        }
+    })
+}
+
+const submitEditFamily = () => {
+    useForm(editingMember.value).put(route('family-members.update', editingMember.value.id), {
+        onSuccess: () => {
+            const index = familyMembers.value.findIndex(f => f.id === editingMember.value.id)
+            if (index !== -1) familyMembers.value[index] = { ...editingMember.value }
+            closeModal()
+        }
+    })
+}
+
+const currentName = computed({
+    get: () => editingMember.value ? editingMember.value.name : familyForm.name,
+    set: (val) => {
+        if (editingMember.value) editingMember.value.name = val
+        else familyForm.name = val
+    }
+})
+
+const currentLabel = computed({
+    get: () => editingMember.value ? editingMember.value.label : familyForm.label,
+    set: (val) => {
+        if (editingMember.value) editingMember.value.label = val
+        else familyForm.label = val
+    }
+})
 </script>
 
 <template>
-    <AppLayout title="Edit Client">
+    <AdminLayout title="Edit Client">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Edit Client
@@ -84,9 +111,9 @@ const closeModal = () => {
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
                 <!-- Formulário de edição do cliente -->
-                <form @submit.prevent="submit" class="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-md shadow">
+                <form @submit.prevent="submit" class="bg-white dark:bg-gray-800 p-6 rounded-md shadow space-y-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Client Name</label>
                         <input v-model="form.name" type="text"
@@ -95,32 +122,36 @@ const closeModal = () => {
                     </div>
 
                     <div class="flex justify-end">
-                        <PrimaryButton type="submit">
-                            Update Client
-                        </PrimaryButton>
+                        <PrimaryButton type="submit">Update Client</PrimaryButton>
                     </div>
                 </form>
 
-                <!-- Seção de membros da família -->
-                <div class="mt-10 bg-white dark:bg-gray-800 p-6 rounded-md shadow">
+                <!-- Seção membros da família -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-md shadow">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Family Members</h3>
-                        <PrimaryButton @click="showModal = true" :disabled="availableLabels.length === 0">
+                        <PrimaryButton @click="openCreateModal" :disabled="availableLabels.length === 0">
                             Add Member
                         </PrimaryButton>
                     </div>
 
-                    <table v-if="familyMembers.length" class="min-w-full table-auto text-sm text-gray-800 dark:text-gray-200">
+                    <table v-if="familyMembers.length" class="min-w-full text-sm text-gray-800 dark:text-gray-200">
                         <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
                                 <th class="text-left px-4 py-2">Name</th>
                                 <th class="text-left px-4 py-2">Relationship</th>
+                                <th class="text-left px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="member in familyMembers" :key="member.id" class="border-t border-gray-300 dark:border-gray-600">
+                            <tr v-for="member in familyMembers" :key="member.id"
+                                class="border-t border-gray-300 dark:border-gray-600">
                                 <td class="px-4 py-2">{{ member.name }}</td>
                                 <td class="px-4 py-2 capitalize">{{ member.label.replace('_', ' ') }}</td>
+                                <td class="px-4 py-2">
+                                    <button @click="openEditModal(member)"
+                                        class="text-blue-600 hover:underline text-sm">Edit</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -130,51 +161,53 @@ const closeModal = () => {
             </div>
         </div>
 
-        <!-- Modal de Adição de Membro da Família -->
+        <!-- Modal reutilizável para criar ou editar membros -->
         <transition name="fade">
             <div v-if="showModal"
                 class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm">
                 <div class="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full p-5 mx-4 relative"
                     @click.stop>
-                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Add Family Member</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+                        {{ editingMember ? 'Edit Member' : 'Add Family Member' }}
+                    </h3>
 
-                    <form @submit.prevent="submitFamily" novalidate>
-                        <input v-model="familyForm.name" type="text" placeholder="Full name"
-                            class="w-full p-2 border border-gray-300 rounded-md mb-4 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                    <form @submit.prevent="editingMember ? submitEditFamily() : submitFamily()" novalidate>
+                        <input v-model="currentName" type="text" placeholder="Full name"
+                            class="w-full p-2 border border-gray-300 rounded-md mb-4 dark:bg-gray-800 dark:text-white text-sm"
                             required />
 
-                        <select v-model="familyForm.label"
-                            class="w-full p-2 border border-gray-300 rounded-md mb-4 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                        <select v-model="currentLabel"
+                            class="w-full p-2 border border-gray-300 rounded-md mb-4 dark:bg-gray-800 dark:text-white text-sm"
                             required>
                             <option value="">Select Relationship</option>
-                            <option v-for="option in availableLabels" :key="option.value" :value="option.value">
+                            <option v-for="option in allLabels" :key="option.value" :value="option.value">
                                 {{ option.text }}
                             </option>
                         </select>
 
                         <div class="flex justify-end space-x-3">
                             <button type="button" @click="closeModal"
-                                class="px-4 py-1.5 rounded-md bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium transition">
+                                class="px-4 py-1.5 rounded-md bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm">
                                 Cancel
                             </button>
                             <button type="submit"
-                                class="px-4 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white font-semibold text-sm transition"
-                                :disabled="familyForm.processing || availableLabels.length === 0">
-                                Save
+                                class="px-4 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white font-semibold text-sm"
+                                :disabled="editingMember ? false : familyForm.processing">
+                                {{ editingMember ? 'Update' : 'Save' }}
                             </button>
                         </div>
                     </form>
 
-                    <!-- Botão de fechar no canto superior -->
-                    <button @click="closeModal" aria-label="Close modal"
-                        class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
+                    <button @click="closeModal"
+                        class="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        aria-label="Close modal">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
             </div>
         </transition>
-    </AppLayout>
+    </AdminLayout>
 </template>

@@ -96,7 +96,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/files/reupload/{id}', [ClientFileController::class, 'reupload'])->name('files.reupload');
     // Route::put('/clients/{client}/documents/{file}', [ClientFileController::class, 'update'])->name('client.update-document');
     Route::match(['put', 'post'], '/clients/{client}/documents/{id}', [ClientFileController::class, 'update'])->name('client.update-document');
-
+    Route::put('/admin/family-members/{familyMember}', [ClientController::class, 'updateFamilyMember'])
+        ->name('family-members.update');
 
 
 });
@@ -161,6 +162,9 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         Route::get('/my/clients/create', [AdminClientController::class, 'mycreate'])->name('myclients.create');
         Route::post('/myclients', [AdminClientController::class, 'mystore'])->name('myclients.store');
         Route::delete('/clients/{client}', [AdminClientController::class, 'mydestroy'])->name('clients.mydestroy');
+
+        Route::put('/admin/family-members/{familyMember}', [AdminClientController::class, 'updateFamilyMember'])
+            ->name('family-members.update');
     });
 
 

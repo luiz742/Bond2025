@@ -21,9 +21,10 @@ const submit = () => {
     form.put(route('admin.clients.update', props.client.id))
 }
 
-// Modal de família
+// Modal de membros da família
 const showModal = ref(false)
-const familyMembers = ref(props.familyMembers || [])
+const editingMember = ref(null)
+const familyMembers = ref([...props.familyMembers])
 
 const allLabels = [
     { value: 'spouse', text: 'Spouse' },
@@ -35,7 +36,7 @@ const allLabels = [
 
 const availableLabels = computed(() => {
     const used = familyMembers.value.map(f => f.label)
-    return allLabels.filter(l => !used.includes(l.value))
+    return allLabels.filter(l => !used.includes(l.value) || (editingMember.value && editingMember.value.label === l.value))
 })
 
 const familyForm = useForm({
@@ -43,6 +44,23 @@ const familyForm = useForm({
     name: '',
     label: '',
 })
+
+const openEditModal = (member) => {
+    editingMember.value = { ...member }
+    showModal.value = true
+}
+
+const openCreateModal = () => {
+    editingMember.value = null
+    familyForm.reset()
+    showModal.value = true
+}
+
+const closeModal = () => {
+    showModal.value = false
+    editingMember.value = null
+    familyForm.reset()
+}
 
 const submitFamily = () => {
     familyForm.post(route('family-members.store'), {
@@ -52,15 +70,36 @@ const submitFamily = () => {
                 name: familyForm.name,
                 label: familyForm.label,
             })
-            familyForm.reset()
-            showModal.value = false
+            closeModal()
         }
     })
 }
 
-const closeModal = () => {
-    showModal.value = false
+const submitEditFamily = () => {
+    useForm(editingMember.value).put(route('admin.family-members.update', editingMember.value.id), {
+        onSuccess: () => {
+            const index = familyMembers.value.findIndex(f => f.id === editingMember.value.id)
+            if (index !== -1) familyMembers.value[index] = { ...editingMember.value }
+            closeModal()
+        }
+    })
 }
+
+const currentName = computed({
+    get: () => editingMember.value ? editingMember.value.name : familyForm.name,
+    set: (val) => {
+        if (editingMember.value) editingMember.value.name = val
+        else familyForm.name = val
+    }
+})
+
+const currentLabel = computed({
+    get: () => editingMember.value ? editingMember.value.label : familyForm.label,
+    set: (val) => {
+        if (editingMember.value) editingMember.value.label = val
+        else familyForm.label = val
+    }
+})
 </script>
 
 <template>
@@ -83,9 +122,7 @@ const closeModal = () => {
                     </div>
 
                     <div class="flex justify-end">
-                        <PrimaryButton type="submit">
-                            Update Client
-                        </PrimaryButton>
+                        <PrimaryButton type="submit">Update Client</PrimaryButton>
                     </div>
                 </form>
 
@@ -93,7 +130,7 @@ const closeModal = () => {
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-md shadow">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Family Members</h3>
-                        <PrimaryButton @click="showModal = true" :disabled="availableLabels.length === 0">
+                        <PrimaryButton @click="openCreateModal" :disabled="availableLabels.length === 0">
                             Add Member
                         </PrimaryButton>
                     </div>
@@ -103,6 +140,7 @@ const closeModal = () => {
                             <tr>
                                 <th class="text-left px-4 py-2">Name</th>
                                 <th class="text-left px-4 py-2">Relationship</th>
+                                <th class="text-left px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,6 +148,10 @@ const closeModal = () => {
                                 class="border-t border-gray-300 dark:border-gray-600">
                                 <td class="px-4 py-2">{{ member.name }}</td>
                                 <td class="px-4 py-2 capitalize">{{ member.label.replace('_', ' ') }}</td>
+                                <td class="px-4 py-2">
+                                    <button @click="openEditModal(member)"
+                                        class="text-blue-600 hover:underline text-sm">Edit</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -119,24 +161,26 @@ const closeModal = () => {
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Modal reutilizável para criar ou editar membros -->
         <transition name="fade">
             <div v-if="showModal"
                 class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm">
                 <div class="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full p-5 mx-4 relative"
                     @click.stop>
-                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Add Family Member</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+                        {{ editingMember ? 'Edit Member' : 'Add Family Member' }}
+                    </h3>
 
-                    <form @submit.prevent="submitFamily" novalidate>
-                        <input v-model="familyForm.name" type="text" placeholder="Full name"
+                    <form @submit.prevent="editingMember ? submitEditFamily() : submitFamily()" novalidate>
+                        <input v-model="currentName" type="text" placeholder="Full name"
                             class="w-full p-2 border border-gray-300 rounded-md mb-4 dark:bg-gray-800 dark:text-white text-sm"
                             required />
 
-                        <select v-model="familyForm.label"
+                        <select v-model="currentLabel"
                             class="w-full p-2 border border-gray-300 rounded-md mb-4 dark:bg-gray-800 dark:text-white text-sm"
                             required>
                             <option value="">Select Relationship</option>
-                            <option v-for="option in availableLabels" :key="option.value" :value="option.value">
+                            <option v-for="option in allLabels" :key="option.value" :value="option.value">
                                 {{ option.text }}
                             </option>
                         </select>
@@ -148,8 +192,8 @@ const closeModal = () => {
                             </button>
                             <button type="submit"
                                 class="px-4 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white font-semibold text-sm"
-                                :disabled="familyForm.processing || availableLabels.length === 0">
-                                Save
+                                :disabled="editingMember ? false : familyForm.processing">
+                                {{ editingMember ? 'Update' : 'Save' }}
                             </button>
                         </div>
                     </form>
