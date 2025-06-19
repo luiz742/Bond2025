@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useForm } from '@inertiajs/vue3'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import AppLayout from '@/Layouts/AppLayout.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 
 const props = defineProps({
@@ -103,7 +103,7 @@ const currentLabel = computed({
 </script>
 
 <template>
-    <AdminLayout title="Edit Client">
+    <AppLayout title="Edit Client">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Edit Client
@@ -209,5 +209,5 @@ const currentLabel = computed({
                 </div>
             </div>
         </transition>
-    </AdminLayout>
+    </AppLayout>
 </template>

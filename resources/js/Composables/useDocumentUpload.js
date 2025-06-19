@@ -23,10 +23,19 @@ export default function useDocumentUpload(props) {
             client: 'main',
             spouse: 'spouse',
             child_1: 'child_1',
+            child_2: 'child_2',
+            child_3: 'child_3',
+            child_4: 'child_4',
         }
+
         const clientTypeToFilter = mapTabToClientType[tabKey] || tabKey
-        return (props.client.service?.documents || []).filter(doc => doc.client_type === clientTypeToFilter)
+
+        return (props.client.service?.documents || []).filter(doc =>
+            doc.client_type === clientTypeToFilter &&
+            doc.type === 'client' // <- só inclui documentos do tipo client
+        )
     }
+
 
     const companyDocuments = computed(() =>
         (props.client.service?.documents || []).filter(doc => doc?.type?.toLowerCase() === 'company')
