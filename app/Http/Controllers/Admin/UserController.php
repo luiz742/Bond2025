@@ -108,7 +108,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $services = Service::all();
-        $clients = $user->clients()->select('id', 'name', 'created_at')->latest()->paginate(10);
+        $clients = $user->clients()->select('id', 'code_reference', 'name', 'created_at')->latest()->paginate(10);
 
         return Inertia::render('Admin/Users/Show', [
             'user' => $user,

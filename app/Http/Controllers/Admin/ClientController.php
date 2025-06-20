@@ -110,11 +110,11 @@ class ClientController extends Controller
             'user_id' => 'required|exists:users,id',
             'service_id' => 'nullable|exists:services,id',
         ]);
-
+        $service_id = Auth::user()->service_id ?? null;
         $client = Client::create([
             'name' => $request->name,
             'user_id' => $request->user_id,
-            'service_id' => $user->service_id,
+            'service_id' => $service_id,
             'code_reference' => Client::generateUniqueCodeReference(),
         ]);
 
@@ -272,6 +272,8 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
             'service_id' => 'required|exists:services,id',
         ]);
+
+
 
         $validated['user_id'] = $user->id;
         $validated['code_reference'] = Client::generateUniqueCodeReference();
