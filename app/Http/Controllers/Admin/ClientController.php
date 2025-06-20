@@ -18,10 +18,20 @@ class ClientController extends Controller
     {
         $user = Auth::user();
 
-        $clients = Client::where('service_id', $user->service_id)
-            ->orderBy('created_at', 'desc')
-            ->with(['service', 'files', 'user'])
-            ->paginate(10);
+        if ($user->role == 'super_admin') {
+            $clients = Client::orderBy('created_at', 'desc')
+                ->with(['service', 'files', 'user'])
+                ->paginate(10);
+            return Inertia::render('Admin/Clients/Index', [
+                'clients' => $clients,
+            ]);
+        } else {
+
+            $clients = Client::where('service_id', $user->service_id)
+                ->orderBy('created_at', 'desc')
+                ->with(['service', 'files', 'user'])
+                ->paginate(10);
+        }
 
         return Inertia::render('Admin/Clients/Index', [
             'clients' => $clients,
