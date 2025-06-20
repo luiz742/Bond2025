@@ -100,20 +100,21 @@ const {
                                             <!-- Botões se status for "pending" -->
                                             <div v-if="getFileForDocument(document.id)?.status === 'pending'"
                                                 class="flex space-x-3">
-                                                <PrimaryButton
-                                                    class="px-4 py-1 bg-green-600 hover:bg-green-700 transition rounded text-sm"
+                                                <button
+                                                    class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-green-500 hover:bg-green-600 transition"
                                                     :disabled="form.processing"
                                                     @click.prevent="statusSubmit('approved', getFileForDocument(document.id).id)">
                                                     Approve
-                                                </PrimaryButton>
+                                                </button>
 
-                                                <PrimaryButton
-                                                    class="px-4 py-1 bg-red-600 hover:bg-red-700 transition rounded text-sm"
+                                                <button
+                                                    class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-red-500 hover:bg-red-600 transition"
                                                     :disabled="form.processing"
                                                     @click.prevent="openRejectionModal(getFileForDocument(document.id).id)">
                                                     Reject
-                                                </PrimaryButton>
+                                                </button>
                                             </div>
+
 
                                             <!-- Link para ver arquivo se status for diferente de 'rejected' -->
                                             <a v-if="getFileForDocument(document.id)?.status !== 'rejected'"
