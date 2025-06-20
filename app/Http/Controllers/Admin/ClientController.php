@@ -274,7 +274,6 @@ class ClientController extends Controller
         ]);
 
 
-
         $validated['user_id'] = $user->id;
         $validated['code_reference'] = Client::generateUniqueCodeReference();
 
