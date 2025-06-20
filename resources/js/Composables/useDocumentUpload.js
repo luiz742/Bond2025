@@ -10,14 +10,6 @@ export default function useDocumentUpload(props) {
         filterClientText.value = ''
     })
 
-    const tabs = computed(() => [
-        { key: 'client', label: 'Client' },
-        ...props.familyMembers.map(m => ({
-            key: m.label.toLowerCase(),
-            label: m.label.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-        }))
-    ])
-
     const documentsForTab = (tabKey) => {
         const mapTabToClientType = {
             client: 'main',
@@ -32,14 +24,27 @@ export default function useDocumentUpload(props) {
 
         return (props.client.service?.documents || []).filter(doc =>
             doc.client_type === clientTypeToFilter &&
-            doc.type === 'client' // <- só inclui documentos do tipo client
+            doc.type === 'client'
         )
     }
 
+    const companyDocuments = computed(() => {
+        const mapTabToClientType = {
+            client: 'main',
+            spouse: 'spouse',
+            child_1: 'child_1',
+            child_2: 'child_2',
+            child_3: 'child_3',
+            child_4: 'child_4',
+        }
 
-    const companyDocuments = computed(() =>
-        (props.client.service?.documents || []).filter(doc => doc?.type?.toLowerCase() === 'company')
-    )
+        const clientTypeToFilter = mapTabToClientType[activeTab.value] || activeTab.value
+
+        return (props.client.service?.documents || []).filter(doc =>
+            doc?.type?.toLowerCase() === 'company' &&
+            doc?.client_type === clientTypeToFilter
+        )
+    })
 
     const filteredClientDocuments = computed(() =>
         documentsForTab(activeTab.value).filter(doc =>
@@ -97,7 +102,6 @@ export default function useDocumentUpload(props) {
 
     return {
         activeTab,
-        tabs,
         filterClientText,
         filterCompanyText,
         filteredClientDocuments,

@@ -83,7 +83,7 @@ class ClientController extends Controller
             ->with(['service.documents', 'files', 'user'])
             ->firstOrFail();
 
-        $familyMembers = $client->familyMembers()->get(['id', 'label']);
+        $familyMembers = $client->familyMembers()->get(['id', 'label', 'name']);
 
         return Inertia::render('Admin/Clients/Show', [
             'client' => $client,

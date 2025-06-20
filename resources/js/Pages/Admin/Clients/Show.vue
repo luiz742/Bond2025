@@ -1,11 +1,14 @@
 <script setup>
+import { computed } from 'vue'
 import useDocumentUpload from '@/Composables/useDocumentUpload'
+import useDocumentTabs from '@/Composables/useDocumentTabs'
 import useDocumentStatus from '@/Composables/useDocumentStatus'
+import useDocumentUpdate from '@/Composables/useDocumentUpdate'
+
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import InputError from '@/Components/InputError.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
-import useDocumentUpdate from '@/Composables/useDocumentUpdate'
 
 const props = defineProps({
     user: Object,
@@ -13,15 +16,11 @@ const props = defineProps({
     familyMembers: Array,
 })
 
-const {
-    form: updateForm,
-    updating,
-    update
-} = useDocumentUpdate()
+const { tabs } = useDocumentTabs(props.familyMembers)
+
 
 const {
     activeTab,
-    tabs,
     filterClientText,
     filterCompanyText,
     filteredClientDocuments,
@@ -34,6 +33,12 @@ const {
 } = useDocumentUpload(props)
 
 const {
+    form: updateForm,
+    updating,
+    update
+} = useDocumentUpdate()
+
+const {
     statusForm,
     statusSubmit,
     showRejectionModal,
@@ -41,6 +46,8 @@ const {
     submitRejection
 } = useDocumentStatus()
 </script>
+
+
 
 <template>
     <AdminLayout :title="`Client: ${client.name}`">
