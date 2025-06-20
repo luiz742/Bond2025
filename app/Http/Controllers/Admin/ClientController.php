@@ -252,13 +252,13 @@ class ClientController extends Controller
 
     public function mydestroy(Client $client)
     {
-        if (auth()->user()->id !== $client->user_id) {
-            return redirect()->back()->dangerBanner('error', "You don't have permission to delete this client.");
+        if (auth()->user()->role == 'super_admin' && auth()->user()->id !== $client->user_id) {
+            $client->delete();
+            return redirect()->back()
+                ->banner('Client deleted successfully.');
+        } elseif (auth()->user()->id !== $client->user_id) {
+            return redirect()->back()->dangerBanner("You don't have permission to delete this client.");
         }
-
-        $client->delete();
-        return redirect()->back()
-            ->banner('Client deleted successfully.');
     }
 
     public function mycreate(Request $request)
