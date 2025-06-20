@@ -95,6 +95,7 @@ class UserController extends Controller
             'service_agreement' => ['nullable'],
             'trade_license_number' => ['nullable', 'string', 'max:255'],
             'tax_registration_number' => ['nullable', 'string', 'max:255'],
+            'address' => ['nullable', 'string', 'max:255'],
         ]);
 
         $user->update([
@@ -105,6 +106,7 @@ class UserController extends Controller
             'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
             'tax_registration_number' => $validated['tax_registration_number'] ?? null,
             'trade_license_number' => $validated['trade_license_number'] ?? null,
+            'address' => $validated['address'] ?? null,
         ]);
 
         return redirect()->back()->banner('User updated.');

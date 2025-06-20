@@ -52,7 +52,9 @@ class HandleInertiaRequests extends Middleware
                             'service_id',
                             'service_agreement',
                             'trade_license_number',
-                            'tax_registration_number', // <-- Adicione isso!
+                            'tax_registration_number',
+                            'address',
+                            'contact_number',
                         ]),
                         [
                             'kyc' => $user->kyc ?? null,
