@@ -56,8 +56,8 @@ const deleteClient = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
 
-                    <div v-if="$page.props.auth.user.role != 'super_admin'" class="mb-4 flex justify-between items-center">
-                        <PrimaryButton as="span">
+                    <div class="mb-4 flex justify-between items-center">
+                        <PrimaryButton v-if="$page.props.auth.user.role != 'super_admin'" as="span">
                             <Link :href="route('admin.clients.admincreate')" class="block w-full h-full">
                             Add New Client
                             </Link>
