@@ -32,8 +32,9 @@ class User extends Authenticatable
         'address',
         'contact_number',
         'tax_registration_number',
+        'trade_license_number', // ✅ Adicionado aqui
         'role',
-        'service_id'
+        'service_id',
     ];
 
     /**

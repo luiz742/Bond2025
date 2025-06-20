@@ -111,6 +111,7 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         // User Management
         Route::get('/subagents', [UserController::class, 'index'])->name('subagents.index');
         Route::get('/users', [UserController::class, 'admin'])->name('users.index');
+        Route::post('/users/{user}/upload-agreement', [UserController::class, 'uploadAgreement'])->name('users.uploadAgreement');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
         Route::get('/subagents/create', [UserController::class, 'create'])->name('subagents.create');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');

@@ -21,6 +21,7 @@ const form = useForm({
     address: props.user.address || '',
     contact_number: props.user.contact_number || '',
     tax_registration_number: props.user.tax_registration_number || '',
+    trade_license_number: props.user.trade_license_number || '',
 });
 const verificationLinkSent = ref(null);
 const photoPreview = ref(null);
@@ -157,6 +158,13 @@ const clearPhotoFileInput = () => {
                 <TextInput id="tax_registration_number" v-model="form.tax_registration_number" type="text"
                     class="mt-1 block w-full" autocomplete="off" />
                 <InputError :message="form.errors.tax_registration_number" class="mt-2" />
+            </div>
+
+            <div v-if="props.user.role === 'b2b'" class="col-span-6 sm:col-span-4">
+                <InputLabel for="trade_license_number" value="Trade License Number" />
+                <TextInput id="trade_license_number" v-model="form.trade_license_number" type="text"
+                    class="mt-1 block w-full" autocomplete="off" />
+                <InputError :message="form.errors.trade_license_number" class="mt-2" />
             </div>
 
             <!-- Se role NÃO for b2b (e não for admin), mostrar Address e Contact Number -->

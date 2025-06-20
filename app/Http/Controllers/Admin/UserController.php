@@ -10,6 +10,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 
 class UserController extends Controller
@@ -84,12 +85,16 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        dd($request->all());
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'password' => ['nullable', Rules\Password::defaults()],
             'role' => ['required', 'in:admin,b2b,super_admin'],
             'service_id' => ['nullable', 'integer', 'exists:services,id'], // aqui
+            'service_agreement' => ['nullable'],
+            'trade_license_number' => ['nullable', 'string', 'max:255'],
+            'tax_registration_number' => ['nullable', 'string', 'max:255'],
         ]);
 
         $user->update([
@@ -98,10 +103,28 @@ class UserController extends Controller
             'role' => $validated['role'],
             'service_id' => $validated['service_id'] ?? null,
             'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
+            'tax_registration_number' => $validated['tax_registration_number'] ?? null,
+            'trade_license_number' => $validated['trade_license_number'] ?? null,
         ]);
 
         return redirect()->back()->banner('User updated.');
 
+    }
+
+    public function uploadAgreement(Request $request, User $user)
+    {
+        // dd($request->all());
+        $validated = $request->validate([
+            'service_agreement' => ['required', 'file', 'mimes:pdf', 'max:2048'],
+        ]);
+
+        if ($request->hasFile('service_agreement')) {
+            $path = $request->file('service_agreement')->store('agreements', 'public');
+            $user->service_agreement = $path;
+            $user->save();
+        }
+
+        return redirect()->back()->banner('Service Agreement uploaded successfully.');
     }
 
     // View Clients of a User

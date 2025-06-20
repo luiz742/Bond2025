@@ -24,6 +24,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'address' => ['nullable', 'string', 'max:255'],
             'contact_number' => ['nullable', 'string', 'max:50'],
             'tax_registration_number' => ['nullable', 'string', 'max:50'],
+            'trade_license_number' => ['nullable', 'string', 'max:50'], // Adicionado aqui
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
@@ -42,6 +43,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'address' => $input['address'] ?? null,
                 'contact_number' => $input['contact_number'] ?? null,
                 'tax_registration_number' => $input['tax_registration_number'] ?? null,
+                'trade_license_number' => $input['trade_license_number'] ?? null, // Adicionado aqui
             ])->save();
         }
     }
