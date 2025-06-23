@@ -111,6 +111,12 @@ const logout = () => {
                                 </NavLink>
                             </div>
 
+                            <div v-if="$page.props.auth.user.role === 'super_admin'" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('invoices.index')" :active="route().current('profile.show')">
+                                    Invoices
+                                </NavLink>
+                            </div>
+
                             <!-- Clients - apenas para admin -->
                             <div v-if="$page.props.auth.user.role === 'admin'"
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
