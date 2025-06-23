@@ -17,6 +17,7 @@ class Invoice extends Model
         'to_address',
         'to_tax_registration_number',
         'to_type',
+        'description',
     ];
 
     public function user()
@@ -28,4 +29,10 @@ class Invoice extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function services()
+    {
+        return $this->hasMany(InvoiceService::class);
+    }
+
 }

@@ -85,7 +85,6 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        dd($request->all());
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
@@ -115,7 +114,6 @@ class UserController extends Controller
 
     public function uploadAgreement(Request $request, User $user)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'service_agreement' => ['required', 'file', 'mimes:pdf', 'max:2048'],
         ]);

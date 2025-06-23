@@ -85,6 +85,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
     Route::get('/invoices/{id}/printable', [InvoiceController::class, 'printable'])->name('invoices.printable');
     Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
+    Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');
+    Route::post('/invoice-services', [InvoiceController::class, 'storeInvoiceService'])->name('invoice-services.store');
+    Route::put('/invoice-services/{id}', [InvoiceController::class, 'updateInvoiceService'])->name('invoice-services.update');
+
 
     // PDF Downloads
     Route::get('/pdfs', [PdfDownloadController::class, 'index'])->name('pdfs.index');
