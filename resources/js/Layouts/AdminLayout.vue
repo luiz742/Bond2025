@@ -123,7 +123,7 @@ const logout = () => {
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
-                            <button v-if="$page.props.auth.user.role === 'admin'" title="notifications" @click="$inertia.get(route('notifications.index'))"
+                            <button v-if="$page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'super_admin'" title="notifications" @click="$inertia.get(route('notifications.index'))"
                                 class="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-300"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
