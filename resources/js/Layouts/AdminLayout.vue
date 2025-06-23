@@ -105,13 +105,15 @@ const logout = () => {
                                 </NavLink>
                             </div>
 
-                            <div v-if="$page.props.auth.user.role === 'super_admin'" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div v-if="$page.props.auth.user.role === 'super_admin'"
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('admin.clients.index')" :active="route().current('profile.show')">
                                     Clients
                                 </NavLink>
                             </div>
 
-                            <div v-if="$page.props.auth.user.role === 'super_admin'" class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div v-if="$page.props.auth.user.role === 'super_admin'"
+                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('invoices.index')" :active="route().current('profile.show')">
                                     Invoices
                                 </NavLink>
@@ -129,7 +131,9 @@ const logout = () => {
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
-                            <button v-if="$page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'super_admin'" title="notifications" @click="$inertia.get(route('notifications.index'))"
+                            <button
+                                v-if="$page.props.auth.user.role === 'admin' || $page.props.auth.user.role === 'super_admin'"
+                                title="notifications" @click="$inertia.get(route('notifications.index'))"
                                 class="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-300"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -317,6 +321,42 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
+
+                        <!-- Menus para super_admin -->
+                        <template v-if="$page.props.auth.user.role === 'super_admin'">
+                            <ResponsiveNavLink :href="route('admin.services.index')"
+                                :active="route().current('admin.services.index')">
+                                Services
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('admin.subagents.index')"
+                                :active="route().current('admin.subagents.index')">
+                                Subagents
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('admin.users.index')"
+                                :active="route().current('admin.users.index')">
+                                Users
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('admin.clients.index')"
+                                :active="route().current('admin.clients.index')">
+                                Clients
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('invoices.index')"
+                                :active="route().current('invoices.index')">
+                                Invoices
+                            </ResponsiveNavLink>
+                        </template>
+
+                        <!-- Menus para admin -->
+                        <template v-if="$page.props.auth.user.role === 'admin'">
+                            <ResponsiveNavLink :href="route('admin.clients.index')"
+                                :active="route().current('admin.clients.index')">
+                                Clients
+                            </ResponsiveNavLink>
+                        </template>
                     </div>
 
                     <!-- Responsive Settings Options -->
