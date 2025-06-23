@@ -78,118 +78,121 @@ const {
                         :placeholder="`Filter documents for ${tabs.find(t => t.key === activeTab)?.label || ''}...`"
                         class="mb-4 w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white" />
 
-                    <table class="w-full table-auto border-collapse">
-                        <tbody>
-                            <tr v-for="document in filteredClientDocuments" :key="document.id">
-                                <td class="py-4">
-                                    <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
+                    <div class="overflow-x-auto">
+                        <table class="w-full table-auto border-collapse">
+                            <tbody>
+                                <tr v-for="document in filteredClientDocuments" :key="document.id">
+                                    <td class="py-4">
+                                        <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
 
-                                    <template v-if="getFileForDocument(document.id)">
-                                        <div
-                                            class="text-sm text-gray-700 dark:text-gray-300 flex items-center space-x-4">
+                                        <template v-if="getFileForDocument(document.id)">
+                                            <div
+                                                class="text-sm text-gray-700 dark:text-gray-300 flex items-center space-x-4">
 
-                                            <!-- Status -->
+                                                <!-- Status -->
+                                                <div class="flex items-center space-x-2">
+                                                    <span
+                                                        class="font-semibold text-gray-700 dark:text-gray-300">Status:</span>
+                                                    <span
+                                                        class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase"
+                                                        :class="{
+                                                            'bg-yellow-400': getFileForDocument(document.id)?.status === 'pending',
+                                                            'bg-green-500': getFileForDocument(document.id)?.status === 'approved',
+                                                            'bg-red-500': getFileForDocument(document.id)?.status === 'rejected'
+                                                        }">
+                                                        {{ getFileForDocument(document.id)?.status?.toUpperCase() ||
+                                                            'N/A'
+                                                        }}
+                                                    </span>
+                                                </div>
+
+                                                <!-- Botões se status for "pending" -->
+                                                <div v-if="getFileForDocument(document.id)?.status === 'pending'"
+                                                    class="flex space-x-3">
+                                                    <button
+                                                        class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-green-500 hover:bg-green-600 transition"
+                                                        :disabled="form.processing"
+                                                        @click.prevent="statusSubmit('approved', getFileForDocument(document.id).id)">
+                                                        Approve
+                                                    </button>
+
+                                                    <button
+                                                        class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-red-500 hover:bg-red-600 transition"
+                                                        :disabled="form.processing"
+                                                        @click.prevent="openRejectionModal(getFileForDocument(document.id).id)">
+                                                        Reject
+                                                    </button>
+                                                </div>
+
+
+                                                <!-- Link para ver arquivo se status for diferente de 'rejected' -->
+                                                <a v-if="getFileForDocument(document.id)?.status !== 'rejected'"
+                                                    :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
+                                                    class="flex items-center space-x-1 text-blue-500 hover:text-blue-700 underline whitespace-nowrap">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    <span>View File</span>
+                                                </a>
+
+                                                <!-- Se status do arquivo for 'rejected', mostra botão e input para reenvio -->
+                                                <div v-if="getFileForDocument(document.id)?.status === 'rejected'"
+                                                    class="mt-2">
+
+                                                    <input type="file" :id="`reupload-${document.id}`"
+                                                        @change="(e) => onFileChange(e, document.id)"
+                                                        class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md cursor-pointer bg-white dark:bg-gray-700 focus:outline-none" />
+
+                                                    <PrimaryButton class="mt-2"
+                                                        :disabled="form.processing || !form.files[document.id]"
+                                                        @click.prevent="() => {
+                                                            const fileEntry = getFileForDocument(document.id);
+                                                            if (fileEntry?.id) {
+                                                                update(client.id, fileEntry.id, form.files[document.id]);
+                                                            } else {
+                                                                alert('Arquivo não encontrado para reenvio.');
+                                                            }
+                                                        }">
+                                                        Reupload
+                                                    </PrimaryButton>
+
+                                                    <InputError :message="form.errors[`files.${document.id}`]"
+                                                        class="mt-2" />
+                                                </div>
+
+                                            </div>
+
+
                                             <div class="flex items-center space-x-2">
-                                                <span
-                                                    class="font-semibold text-gray-700 dark:text-gray-300">Status:</span>
-                                                <span
-                                                    class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase"
-                                                    :class="{
-                                                        'bg-yellow-400': getFileForDocument(document.id)?.status === 'pending',
-                                                        'bg-green-500': getFileForDocument(document.id)?.status === 'approved',
-                                                        'bg-red-500': getFileForDocument(document.id)?.status === 'rejected'
-                                                    }">
-                                                    {{ getFileForDocument(document.id)?.status?.toUpperCase() || 'N/A'
-                                                    }}
+                                                <span v-if="getFileForDocument(document.id)?.status === 'rejected'"
+                                                    class=" text-sm">
+                                                    <span class="text-red-500">Rejection Reason: </span>
+                                                    {{ getFileForDocument(document.id)?.rejection_reason || 'N/A' }}
                                                 </span>
                                             </div>
+                                        </template>
+                                        <template v-else>
+                                            <input :id="`doc-${document.id}`" type="file"
+                                                @change="e => onFileChange(e, document.id)"
+                                                class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                accept=".pdf,.jpg,.png" />
 
-                                            <!-- Botões se status for "pending" -->
-                                            <div v-if="getFileForDocument(document.id)?.status === 'pending'"
-                                                class="flex space-x-3">
-                                                <button
-                                                    class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-green-500 hover:bg-green-600 transition"
-                                                    :disabled="form.processing"
-                                                    @click.prevent="statusSubmit('approved', getFileForDocument(document.id).id)">
-                                                    Approve
-                                                </button>
+                                            <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
 
-                                                <button
-                                                    class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-red-500 hover:bg-red-600 transition"
-                                                    :disabled="form.processing"
-                                                    @click.prevent="openRejectionModal(getFileForDocument(document.id).id)">
-                                                    Reject
-                                                </button>
-                                            </div>
-
-
-                                            <!-- Link para ver arquivo se status for diferente de 'rejected' -->
-                                            <a v-if="getFileForDocument(document.id)?.status !== 'rejected'"
-                                                :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
-                                                class="flex items-center space-x-1 text-blue-500 hover:text-blue-700 underline whitespace-nowrap">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                </svg>
-                                                <span>View File</span>
-                                            </a>
-
-                                            <!-- Se status do arquivo for 'rejected', mostra botão e input para reenvio -->
-                                            <div v-if="getFileForDocument(document.id)?.status === 'rejected'"
-                                                class="mt-2">
-
-                                                <input type="file" :id="`reupload-${document.id}`"
-                                                    @change="(e) => onFileChange(e, document.id)"
-                                                    class="mt-1 block w-full text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md cursor-pointer bg-white dark:bg-gray-700 focus:outline-none" />
-
-                                                <PrimaryButton class="mt-2"
-                                                    :disabled="form.processing || !form.files[document.id]"
-                                                    @click.prevent="() => {
-                                                        const fileEntry = getFileForDocument(document.id);
-                                                        if (fileEntry?.id) {
-                                                            update(client.id, fileEntry.id, form.files[document.id]);
-                                                        } else {
-                                                            alert('Arquivo não encontrado para reenvio.');
-                                                        }
-                                                    }">
-                                                    Reupload
-                                                </PrimaryButton>
-
-                                                <InputError :message="form.errors[`files.${document.id}`]"
-                                                    class="mt-2" />
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="flex items-center space-x-2">
-                                            <span v-if="getFileForDocument(document.id)?.status === 'rejected'"
-                                                class=" text-sm">
-                                                <span class="text-red-500">Rejection Reason: </span>
-                                                {{ getFileForDocument(document.id)?.rejection_reason || 'N/A' }}
-                                            </span>
-                                        </div>
-                                    </template>
-                                    <template v-else>
-                                        <input :id="`doc-${document.id}`" type="file"
-                                            @change="e => onFileChange(e, document.id)"
-                                            class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                            accept=".pdf,.jpg,.png" />
-
-                                        <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
-
-                                        <PrimaryButton v-if="form.files[document.id]" class="mt-3"
-                                            :disabled="form.processing" @click.prevent="submit(document.id)">
-                                            Submit
-                                        </PrimaryButton>
-                                    </template>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                            <PrimaryButton v-if="form.files[document.id]" class="mt-3"
+                                                :disabled="form.processing" @click.prevent="submit(document.id)">
+                                                Submit
+                                            </PrimaryButton>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- DOCUMENTOS DA EMPRESA -->
@@ -201,42 +204,44 @@ const {
                     <input v-model="filterCompanyText" type="text" placeholder="Filter company documents..."
                         class="mb-4 w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white" />
 
-                    <table class="w-full table-auto border-collapse">
-                        <tbody>
-                            <tr v-for="document in filteredCompanyDocuments" :key="document.id">
-                                <td class="py-4">
-                                    <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
+                    <div class="overflow-x-auto">
+                        <table class="w-full table-auto border-collapse">
+                            <tbody>
+                                <tr v-for="document in filteredCompanyDocuments" :key="document.id">
+                                    <td class="py-4">
+                                        <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
 
-                                    <template v-if="getFileForDocument(document.id)">
-                                        <div
-                                            class="text-sm text-gray-700 dark:text-gray-300 flex items-center space-x-2">
-                                            <span class="font-medium">Status:</span>
+                                        <template v-if="getFileForDocument(document.id)">
+                                            <div
+                                                class="text-sm text-gray-700 dark:text-gray-300 flex items-center space-x-2">
+                                                <span class="font-medium">Status:</span>
 
 
-                                            <a :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
-                                                class="ml-4 text-blue-600 hover:underline">
-                                                View Document
-                                            </a>
-                                        </div>
-                                    </template>
+                                                <a :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
+                                                    class="ml-4 text-blue-600 hover:underline">
+                                                    View Document
+                                                </a>
+                                            </div>
+                                        </template>
 
-                                    <template v-else>
-                                        <input :id="`doc-${document.id}`" type="file"
-                                            @change="e => onFileChange(e, document.id)"
-                                            class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                            accept=".pdf,.jpg,.png" />
+                                        <template v-else>
+                                            <input :id="`doc-${document.id}`" type="file"
+                                                @change="e => onFileChange(e, document.id)"
+                                                class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                accept=".pdf,.jpg,.png" />
 
-                                        <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
+                                            <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
 
-                                        <PrimaryButton v-if="form.files[document.id]" class="mt-3"
-                                            :disabled="form.processing" @click.prevent="submit(document.id)">
-                                            Submit
-                                        </PrimaryButton>
-                                    </template>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                            <PrimaryButton v-if="form.files[document.id]" class="mt-3"
+                                                :disabled="form.processing" @click.prevent="submit(document.id)">
+                                                Submit
+                                            </PrimaryButton>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -135,28 +135,29 @@ const currentLabel = computed({
                         </PrimaryButton>
                     </div>
 
-                    <table v-if="familyMembers.length" class="min-w-full text-sm text-gray-800 dark:text-gray-200">
-                        <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th class="text-left px-4 py-2">Name</th>
-                                <th class="text-left px-4 py-2">Relationship</th>
-                                <th class="text-left px-4 py-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="member in familyMembers" :key="member.id"
-                                class="border-t border-gray-300 dark:border-gray-600">
-                                <td class="px-4 py-2">{{ member.name }}</td>
-                                <td class="px-4 py-2 capitalize">{{ member.label.replace('_', ' ') }}</td>
-                                <td class="px-4 py-2">
-                                    <button @click="openEditModal(member)"
-                                        class="text-blue-600 hover:underline text-sm">Edit</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <p v-else class="text-gray-500 dark:text-gray-400 text-sm">No family members yet.</p>
+                    <div class="overflow-x-auto">
+                        <table v-if="familyMembers.length" class="min-w-full text-sm text-gray-800 dark:text-gray-200">
+                            <thead class="bg-gray-100 dark:bg-gray-700">
+                                <tr>
+                                    <th class="text-left px-4 py-2">Name</th>
+                                    <th class="text-left px-4 py-2">Relationship</th>
+                                    <th class="text-left px-4 py-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="member in familyMembers" :key="member.id"
+                                    class="border-t border-gray-300 dark:border-gray-600">
+                                    <td class="px-4 py-2">{{ member.name }}</td>
+                                    <td class="px-4 py-2 capitalize">{{ member.label.replace('_', ' ') }}</td>
+                                    <td class="px-4 py-2">
+                                        <button @click="openEditModal(member)"
+                                            class="text-blue-600 hover:underline text-sm">Edit</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p v-else class="text-gray-500 dark:text-gray-400 text-sm">No family members yet.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -201,8 +202,7 @@ const currentLabel = computed({
                     <button @click="closeModal"
                         class="absolute top-3 right-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                         aria-label="Close modal">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            stroke-width="2">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>

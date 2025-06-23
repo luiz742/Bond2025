@@ -26,10 +26,8 @@ const totalServices = props.invoice.services
 </script>
 
 <template>
-    <div
-        class="text-gray-900 bg-white p-10 font-sans mx-auto shadow-lg border border-gray-200 rounded-md flex flex-col"
-        style="width: 794px; min-height: 1123px;"
-    >
+    <div class="text-gray-900 bg-white p-10 font-sans mx-auto shadow-lg border border-gray-200 rounded-md flex flex-col"
+        style="width: 794px; min-height: 1123px;">
         <!-- Conteúdo principal -->
         <div>
             <!-- Logo -->
@@ -38,13 +36,9 @@ const totalServices = props.invoice.services
             </div>
 
             <!-- Cabeçalho -->
-            <div
-                class="flex justify-between items-center mb-8 mt-4 border-b border-gray-300 pb-4"
-            >
+            <div class="flex justify-between items-center mb-8 mt-4 border-b border-gray-300 pb-4">
                 <div>
-                    <h4
-                        class="text-sm font-semibold uppercase tracking-wide leading-tight mb-1"
-                    >
+                    <h4 class="text-sm font-semibold uppercase tracking-wide leading-tight mb-1">
                         Tax Invoice / Proforma Invoice
                     </h4>
                     <p class="text-sm text-gray-700">
@@ -75,41 +69,33 @@ const totalServices = props.invoice.services
             </section>
 
             <!-- Services Table -->
-            <section
-                v-if="props.invoice.services && props.invoice.services.length"
-                class="mb-6"
-            >
-                <h2
-                    class="text-base font-semibold mb-2 border-b border-gray-300 pb-1"
-                >
+            <section v-if="props.invoice.services && props.invoice.services.length" class="mb-6">
+                <h2 class="text-base font-semibold mb-2 border-b border-gray-300 pb-1">
                     Services
                 </h2>
-                <table class="min-w-full border-collapse">
-                    <thead>
-                        <tr>
-                            <th class="pb-2 text-left text-sm">Service</th>
-                            <th class="pb-2 text-left text-sm">Description</th>
-                            <th class="pb-2 text-right text-sm">Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="service in props.invoice.services"
-                            :key="service.id"
-                            class="border-b border-gray-300"
-                        >
-                            <td class="py-1 text-sm">{{ service.name }}</td>
-                            <td class="py-1 text-sm">{{ service.description }}</td>
-                            <td class="py-1 text-right text-sm">
-                                {{ formatCurrency(service.unit_price, props.invoice.currency) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="pb-2 text-left text-sm">Service</th>
+                                <th class="pb-2 text-left text-sm">Description</th>
+                                <th class="pb-2 text-right text-sm">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="service in props.invoice.services" :key="service.id"
+                                class="border-b border-gray-300">
+                                <td class="py-1 text-sm">{{ service.name }}</td>
+                                <td class="py-1 text-sm">{{ service.description }}</td>
+                                <td class="py-1 text-right text-sm">
+                                    {{ formatCurrency(service.unit_price, props.invoice.currency) }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                <div
-                    class="mt-2 flex justify-end font-semibold text-sm"
-                >
+                <div class="mt-2 flex justify-end font-semibold text-sm">
                     Total: {{ formatCurrency(totalServices, props.invoice.currency) }}
                 </div>
             </section>

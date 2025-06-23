@@ -44,50 +44,60 @@ const filteredClients = computed(() => {
                             class="border rounded px-3 py-1 dark:bg-gray-700 dark:text-gray-200" />
                     </div>
 
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead class="bg-gray-50 dark:bg-gray-800">
-                            <tr>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Code Reference
-                                </th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Client Name
-                                </th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Service
-                                </th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Created At
-                                </th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            <tr v-for="client in filteredClients" :key="client.id"
-                                class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.code_reference
-                                    }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.name }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.service.name }}
-                                </td>
-                                <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ new
-                                    Date(client.created_at).toLocaleString() }}</td>
-                                <td class="px-4 py-2 text-sm">
-                                    <Link :href="`/clients/${client.id}`"
-                                        class="text-blue-600 dark:text-white hover:underline">
-                                    View
-                                    </Link>
-                                    <span class="dark:text-white">/</span>
-                                    <Link :href="`/clients/${client.id}/edit`"
-                                        class="text-blue-600 dark:text-white hover:underline">
-                                    Edit
-                                    </Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th
+                                        class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        Code Reference
+                                    </th>
+                                    <th
+                                        class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        Client Name
+                                    </th>
+                                    <th
+                                        class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        Service
+                                    </th>
+                                    <th
+                                        class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        Created At
+                                    </th>
+                                    <th
+                                        class="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                <tr v-for="client in filteredClients" :key="client.id"
+                                    class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{
+                                        client.code_reference
+                                        }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ client.name }}
+                                    </td>
+                                    <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{
+                                        client.service.name }}
+                                    </td>
+                                    <td class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100">{{ new
+                                        Date(client.created_at).toLocaleString() }}</td>
+                                    <td class="px-4 py-2 text-sm">
+                                        <Link :href="`/clients/${client.id}`"
+                                            class="text-blue-600 dark:text-white hover:underline">
+                                        View
+                                        </Link>
+                                        <span class="dark:text-white">/</span>
+                                        <Link :href="`/clients/${client.id}/edit`"
+                                            class="text-blue-600 dark:text-white hover:underline">
+                                        Edit
+                                        </Link>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div class="mt-4 flex justify-between items-center">
                         <button v-if="clients.prev_page_url" @click="router.visit(clients.prev_page_url)"

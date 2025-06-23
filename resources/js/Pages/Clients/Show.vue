@@ -135,17 +135,12 @@ const getFileUrl = (file) => {
         <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- TABS (Client + membros) -->
             <nav class="mb-6 flex space-x-4 border-b border-gray-200 dark:border-gray-700">
-                <button
-                    v-for="tab in tabs"
-                    :key="tab.key"
-                    @click="activeTab = tab.key"
-                    :class="[
-                        'px-4 py-2 font-semibold',
-                        activeTab === tab.key
-                            ? 'border-b-2 border-blue-600 text-blue-600'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'
-                    ]"
-                >
+                <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" :class="[
+                    'px-4 py-2 font-semibold',
+                    activeTab === tab.key
+                        ? 'border-b-2 border-blue-600 text-blue-600'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400'
+                ]">
                     {{ tab.label }}
                 </button>
             </nav>
@@ -155,57 +150,46 @@ const getFileUrl = (file) => {
 
                 <!-- COLUNA 1: DOCUMENTOS CLIENTE/MEMBROS -->
                 <div class="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6">
-                    <input
-                        v-model="filterClientText"
-                        type="text"
+                    <input v-model="filterClientText" type="text"
                         :placeholder="`Filter documents for ${tabs.find(t => t.key === activeTab)?.label || ''}...`"
-                        class="mb-4 w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
-                    />
+                        class="mb-4 w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white" />
 
-                    <table class="w-full table-auto border-collapse">
-                        <tbody>
-                            <tr v-for="document in filteredClientDocuments" :key="document.id">
-                                <td class="py-4">
-                                    <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
+                    <div class="overflow-x-auto">
+                        <table class="w-full table-auto border-collapse">
+                            <tbody>
+                                <tr v-for="document in filteredClientDocuments" :key="document.id">
+                                    <td class="py-4">
+                                        <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
 
-                                    <template v-if="getFileForDocument(document.id)">
-                                        <div class="text-sm text-gray-700 dark:text-gray-300">
-                                            <span class="font-medium">Status:</span>
-                                            {{ getFileForDocument(document.id).status }}
-                                            <a
-                                                :href="getFileUrl(getFileForDocument(document.id))"
-                                                target="_blank"
-                                                class="ml-4 text-blue-600 hover:underline"
-                                            >
-                                                View Document
-                                            </a>
-                                        </div>
-                                    </template>
+                                        <template v-if="getFileForDocument(document.id)">
+                                            <div class="text-sm text-gray-700 dark:text-gray-300">
+                                                <span class="font-medium">Status:</span>
+                                                {{ getFileForDocument(document.id).status }}
+                                                <a :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
+                                                    class="ml-4 text-blue-600 hover:underline">
+                                                    View Document
+                                                </a>
+                                            </div>
+                                        </template>
 
-                                    <template v-else>
-                                        <input
-                                            :id="`doc-${document.id}`"
-                                            type="file"
-                                            @change="e => onFileChange(e, document.id)"
-                                            class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                            accept=".pdf,.jpg,.png"
-                                        />
+                                        <template v-else>
+                                            <input :id="`doc-${document.id}`" type="file"
+                                                @change="e => onFileChange(e, document.id)"
+                                                class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                accept=".pdf,.jpg,.png" />
 
-                                        <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
+                                            <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
 
-                                        <PrimaryButton
-                                            v-if="form.files[document.id]"
-                                            class="mt-3"
-                                            :disabled="form.processing"
-                                            @click.prevent="submit(document.id)"
-                                        >
-                                            Submit
-                                        </PrimaryButton>
-                                    </template>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                            <PrimaryButton v-if="form.files[document.id]" class="mt-3"
+                                                :disabled="form.processing" @click.prevent="submit(document.id)">
+                                                Submit
+                                            </PrimaryButton>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- COLUNA 2: DOCUMENTOS DA EMPRESA -->
@@ -214,57 +198,45 @@ const getFileUrl = (file) => {
                         Documents Issued By {{ client.service.country }} Government
                     </h4>
 
-                    <input
-                        v-model="filterCompanyText"
-                        type="text"
-                        placeholder="Filter company documents..."
-                        class="mb-4 w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
-                    />
+                    <input v-model="filterCompanyText" type="text" placeholder="Filter company documents..."
+                        class="mb-4 w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white" />
 
-                    <table class="w-full table-auto border-collapse">
-                        <tbody>
-                            <tr v-for="document in filteredCompanyDocuments" :key="document.id">
-                                <td class="py-4">
-                                    <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
+                    <div class="overflow-x-auto">
+                        <table class="w-full table-auto border-collapse">
+                            <tbody>
+                                <tr v-for="document in filteredCompanyDocuments" :key="document.id">
+                                    <td class="py-4">
+                                        <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
 
-                                    <template v-if="getFileForDocument(document.id)">
-                                        <div class="text-sm text-gray-700 dark:text-gray-300">
-                                            <span class="font-medium">Status:</span>
-                                            {{ getFileForDocument(document.id).status }}
-                                            <a
-                                                :href="getFileUrl(getFileForDocument(document.id))"
-                                                target="_blank"
-                                                class="ml-4 text-blue-600 hover:underline"
-                                            >
-                                                View Document
-                                            </a>
-                                        </div>
-                                    </template>
+                                        <template v-if="getFileForDocument(document.id)">
+                                            <div class="text-sm text-gray-700 dark:text-gray-300">
+                                                <span class="font-medium">Status:</span>
+                                                {{ getFileForDocument(document.id).status }}
+                                                <a :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
+                                                    class="ml-4 text-blue-600 hover:underline">
+                                                    View Document
+                                                </a>
+                                            </div>
+                                        </template>
 
-                                    <template v-else>
-                                        <input
-                                            :id="`doc-${document.id}`"
-                                            type="file"
-                                            @change="e => onFileChange(e, document.id)"
-                                            class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                            accept=".pdf,.jpg,.png"
-                                        />
+                                        <template v-else>
+                                            <input :id="`doc-${document.id}`" type="file"
+                                                @change="e => onFileChange(e, document.id)"
+                                                class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                accept=".pdf,.jpg,.png" />
 
-                                        <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
+                                            <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
 
-                                        <PrimaryButton
-                                            v-if="form.files[document.id]"
-                                            class="mt-3"
-                                            :disabled="form.processing"
-                                            @click.prevent="submit(document.id)"
-                                        >
-                                            Submit
-                                        </PrimaryButton>
-                                    </template>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                            <PrimaryButton v-if="form.files[document.id]" class="mt-3"
+                                                :disabled="form.processing" @click.prevent="submit(document.id)">
+                                                Submit
+                                            </PrimaryButton>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>
