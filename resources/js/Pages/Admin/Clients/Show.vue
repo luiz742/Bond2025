@@ -45,6 +45,15 @@ const {
     openRejectionModal,
     submitRejection
 } = useDocumentStatus()
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A'
+  const date = new Date(dateString)
+  return new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'short',
+    timeStyle: 'short'
+  }).format(date)
+}
 </script>
 
 
@@ -163,7 +172,11 @@ const {
                                                     <InputError :message="form.errors[`files.${document.id}`]"
                                                         class="mt-2" />
                                                 </div>
-
+                                            </div>
+                                            <div v-if="getFileForDocument(document.id)">
+                                                <small class="text-xs text-gray-500 dark:text-gray-400">
+                                                    Uploaded at: {{ formatDate(getFileForDocument(document.id).created_at) }}
+                                                </small>
                                             </div>
 
 
@@ -179,7 +192,7 @@ const {
                                             <input :id="`doc-${document.id}`" type="file"
                                                 @change="e => onFileChange(e, document.id)"
                                                 class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                                accept=".pdf,.jpg,.png" />
+                                                accept=".pdf,.jpg,.jpeg,.png" />
 
                                             <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
 
@@ -228,7 +241,7 @@ const {
                                             <input :id="`doc-${document.id}`" type="file"
                                                 @change="e => onFileChange(e, document.id)"
                                                 class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                                accept=".pdf,.jpg,.png" />
+                                                accept=".pdf,.jpg,.jpeg,.png" />
 
                                             <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
 
