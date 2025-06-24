@@ -151,6 +151,8 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdmin::class])
         Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
         Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
         Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+        Route::put('/services/{service}/documents/{name}/{type}', [DocumentController::class, 'updateGrouped'])->name('documents.updateGrouped');
+
 
         // Aqui você pode adicionar rotas extras no futuro:
         Route::get('/clients', [AdminClientController::class, 'index'])->name('clients.index');

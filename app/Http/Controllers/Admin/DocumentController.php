@@ -28,18 +28,20 @@ class DocumentController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:client,company',
-            'client_type' => 'required|string|in:main,spouse,child_1,child_2,child_3,child_4', // ajuste conforme os tipos que quiser permitir
+            'client_type' => 'required|array|min:1',
+            'client_type.*' => 'in:main,spouse,child_1,child_2,child_3,child_4',
         ]);
 
-        $service->documents()->create([
-            'name' => $request->name,
-            'type' => $request->type,
-            'client_type' => $request->client_type,
-        ]);
+        foreach ($request->client_type as $type) {
+            $service->documents()->create([
+                'name' => $request->name,
+                'type' => $request->type,
+                'client_type' => $type,
+            ]);
+        }
 
-        // Retorna para a mesma página Service Show (via Inertia)
         return redirect()->route('admin.services.show', $service)
-            ->banner('Document added successfully.');
+            ->banner('Documents added successfully.');
     }
 
     // Formulário de edição pode ser via modal ou página separada (a definir)
@@ -60,6 +62,33 @@ class DocumentController extends Controller
         return redirect()->route('admin.services.show', $document->service_id)
             ->banner('Document updated successfully.');
     }
+
+    public function updateGrouped(Request $request, Service $service, $name, $type)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:client,company',
+            'client_type' => 'required|array|min:1',
+            'client_type.*' => 'in:main,spouse,child_1,child_2,child_3,child_4',
+        ]);
+
+        // Remove todos com mesmo nome + tipo
+        $service->documents()
+            ->where('name', $name)
+            ->where('type', $type)
+            ->delete();
+
+        foreach ($request->client_type as $clientType) {
+            $service->documents()->create([
+                'name' => $request->name,
+                'type' => $request->type,
+                'client_type' => $clientType,
+            ]);
+        }
+
+        return back()->with('banner', 'Document updated successfully.');
+    }
+
 
     // Deleta documento
     public function destroy(Document $document)
