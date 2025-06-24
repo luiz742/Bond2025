@@ -198,16 +198,13 @@ const formatDate = (dateString) => {
                                             <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
 
                                             <PrimaryButton
-                                            :disabled="processingUploads[document.id]"
-                                            @click.prevent="submit(document.id)"
-                                            >
-                                            Submit
-                                            </PrimaryButton>
+  v-if="form.files[document.id]"
+  :disabled="processingUploads[document.id]"
+  @click.prevent="submit(document.id)"
+>
+  {{ processingUploads[document.id] ? 'Uploading...' : 'Submit' }}
+</PrimaryButton>
 
-                                            <!-- <PrimaryButton v-if="form.files[document.id]" class="mt-3"
-                                                :disabled="form.processing" @click.prevent="submit(document.id)">
-                                                Submit
-                                            </PrimaryButton> -->
                                         </template>
                                     </td>
                                 </tr>
