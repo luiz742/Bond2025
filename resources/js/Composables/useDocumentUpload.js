@@ -73,27 +73,28 @@ export default function useDocumentUpload(props) {
         }
     }
 
-    const uploadProgress = ref({})
+    const processingUploads = ref({})
 
     const submit = (documentId) => {
         if (!form.files[documentId]) return
+        if (processingUploads.value[documentId]) return // já enviando esse arquivo
 
-        const dataToSend = {
-            client_id: form.client_id,
-            files: {
-                [documentId]: form.files[documentId],
-            },
-        }
+        processingUploads.value[documentId] = true
 
         form.post(route('client.upload-documents'), {
-            data: dataToSend,
-            onProgress: (event) => {
-                uploadProgress.value[documentId] = event.percentage
+            data: {
+                client_id: form.client_id,
+                files: {
+                    [documentId]: form.files[documentId],
+                },
             },
             onSuccess: () => {
                 delete form.files[documentId]
-                uploadProgress.value[documentId] = 0
+                processingUploads.value[documentId] = false
             },
+            onError: () => {
+                processingUploads.value[documentId] = false
+            }
         })
     }
 
@@ -136,6 +137,6 @@ export default function useDocumentUpload(props) {
         getFileForDocument,
         getFileUrl,
         form,
-        uploadProgress,
+        processingUploads
     }
 }
