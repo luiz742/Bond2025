@@ -73,6 +73,8 @@ export default function useDocumentUpload(props) {
         }
     }
 
+    const uploadProgress = ref({})
+
     const submit = (documentId) => {
         if (!form.files[documentId]) return
 
@@ -85,11 +87,34 @@ export default function useDocumentUpload(props) {
 
         form.post(route('client.upload-documents'), {
             data: dataToSend,
+            onProgress: (event) => {
+                uploadProgress.value[documentId] = event.percentage
+            },
             onSuccess: () => {
                 delete form.files[documentId]
+                uploadProgress.value[documentId] = 0
             },
         })
     }
+
+
+    // const submit = (documentId) => {
+    //     if (!form.files[documentId]) return
+
+    //     const dataToSend = {
+    //         client_id: form.client_id,
+    //         files: {
+    //             [documentId]: form.files[documentId],
+    //         },
+    //     }
+
+    //     form.post(route('client.upload-documents'), {
+    //         data: dataToSend,
+    //         onSuccess: () => {
+    //             delete form.files[documentId]
+    //         },
+    //     })
+    // }
 
     const getFileForDocument = (documentId) => {
         return props.client.files.find(f => f.document_id === documentId)
@@ -111,5 +136,6 @@ export default function useDocumentUpload(props) {
         getFileForDocument,
         getFileUrl,
         form,
+        uploadProgress,
     }
 }

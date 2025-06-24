@@ -29,7 +29,8 @@ const {
     submit,
     getFileForDocument,
     getFileUrl,
-    form
+    form,
+    uploadProgress
 } = useDocumentUpload(props)
 
 const {
@@ -147,6 +148,15 @@ const formatDate = (dateString) => {
                                                     </svg>
                                                     <span>View File</span>
                                                 </a>
+
+                                                <progress
+                                                    v-if="uploadProgress[document.id] > 0"
+                                                    :value="uploadProgress[document.id]"
+                                                    max="100"
+                                                    class="w-full h-2 rounded bg-blue-100 mt-2"
+                                                    >
+                                                    {{ Math.round(uploadProgress[document.id]) }}%
+                                                </progress>
 
                                                 <!-- Se status do arquivo for 'rejected', mostra botão e input para reenvio -->
                                                 <div v-if="getFileForDocument(document.id)?.status === 'rejected'"
