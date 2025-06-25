@@ -64,7 +64,7 @@ watch(selectedClientId, (val) => {
         const user = props.users.find(u => u.id === selectedUserId.value);
         const client = user?.clients.find(c => c.id === val);
         form.client_id = val;
-        form.user_id = null;
+        form.user_id = selectedUserId.value; // <- Aqui está o fix
         form.to_name = client?.name || '';
         form.to_address = client?.address || '';
     }
@@ -89,16 +89,19 @@ const clientsForSelectedUser = computed(() => {
 });
 
 function submit() {
-  form.post(route('invoices.store'), {
-    onError: (errors) => {
-    },
-    onFinish: () => {
-
-    },
-    onSuccess: () => {
-
+    if (toType.value === 'user') {
+        form.user_id = selectedUserId.value;
+        form.client_id = null;
+    } else {
+        form.client_id = selectedClientId.value;
+        // ✅ NÃO ZERE O user_id aqui!
     }
-  });
+
+    form.post(route('invoices.store'), {
+        onError: (errors) => { },
+        onFinish: () => { },
+        onSuccess: () => { }
+    });
 }
 </script>
 
@@ -161,7 +164,7 @@ function submit() {
                             <input v-model="form.to_address" type="text"
                                 class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white" />
                             <p v-if="form.errors.to_address" class="text-red-600 text-sm mt-1">{{ form.errors.to_address
-                                }}</p>
+                            }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Currency</label>
