@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SearchableSelect from '@/Components/SearchableSelect.vue';
 
@@ -103,7 +103,7 @@ function submit() {
 </script>
 
 <template>
-    <AppLayout title="Create Invoice">
+    <AdminLayout title="Create Invoice">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Create Invoice
@@ -196,5 +196,5 @@ function submit() {
                 </div>
             </div>
         </div>
-    </AppLayout>
+    </AdminLayout>
 </template>
