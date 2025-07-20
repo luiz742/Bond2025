@@ -14,30 +14,14 @@ Route::get('/users', function (Request $request) {
     return response()->json($query->get());
 });
 
-// Lista clientes de um usuário (busca por nome do usuário ou id)
-Route::get('/users/{identifier}/clients', function ($identifier) {
-    // Se identifier for numérico, assume id, senão tenta buscar usuário pelo nome
-    if (is_numeric($identifier)) {
-        $user = User::find($identifier);
-    } else {
-        $user = User::where('name', 'like', "%{$identifier}%")->first();
-    }
-    if (!$user) {
-        return response()->json(['error' => 'User not found'], 404);
-    }
-
+Route::get('/users/{id}/clients', function ($id) {
     $clients = Client::select('id', 'name')
-        ->where('user_id', $user->id)
+        ->where('user_id', $id)
         ->get();
-
-    return response()->json([
-        'user_id' => $user->id,
-        'user_name' => $user->name,
-        'clients' => $clients,
-    ]);
+    return response()->json($clients);
 });
 
-// Lista todos os clientes, com filtro opcional por nome (?name=)
+// Lista todos os clientes, com filtro opcional por nome
 Route::get('/clients', function (Request $request) {
     $name = $request->query('name', '');
     $query = Client::select('id', 'name', 'user_id');
@@ -47,22 +31,24 @@ Route::get('/clients', function (Request $request) {
     return response()->json($query->get());
 });
 
-// Lista familiares de um cliente (por id)
 Route::get('/clients/{id}/family', function ($id) {
     $client = Client::with('familyMembers')->find($id);
+
     if (!$client) {
         return response()->json([], 200);
     }
+
     return response()->json(
-        $client->familyMembers->map(fn($m) => [
-            'id' => $m->id,
-            'name' => $m->name,
-            'type' => $m->type,
-        ])
+        $client->familyMembers->map(function ($m) {
+            return [
+                'id' => $m->id,
+                'name' => $m->name,
+                'type' => $m->type,
+            ];
+        })
     );
 });
 
-// Lista documentos do cliente, incluindo familiares
 Route::get('/clients/{id}/documents', function ($id) {
     $client = Client::with(['service.documents', 'files', 'familyMembers'])->find($id);
 
@@ -70,11 +56,13 @@ Route::get('/clients/{id}/documents', function ($id) {
         return response()->json(['error' => 'Client not found'], 404);
     }
 
-    $familyMembers = $client->familyMembers->map(fn($m) => [
-        'id' => $m->id,
-        'name' => $m->name,
-        'type' => $m->type,
-    ]);
+    $familyMembers = $client->familyMembers->map(function ($member) {
+        return [
+            'id' => $member->id,
+            'name' => $member->name,
+            'type' => $member->type,
+        ];
+    });
 
     $documents = $client->service->documents->map(function ($doc) use ($client, $familyMembers) {
         $ownerName = $client->name;
@@ -83,10 +71,12 @@ Route::get('/clients/{id}/documents', function ($id) {
             if ($member) {
                 $ownerName = $member->name;
             } else {
-                return null; // Ignorar documentos de membros inexistentes
+                return null;
             }
         }
+
         $file = $client->files->firstWhere('document_id', $doc->id);
+
         return [
             'document_id' => $doc->id,
             'document_name' => $doc->name,
