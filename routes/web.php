@@ -24,12 +24,6 @@ use App\Http\Controllers\FamilyMemberController;
 use App\Http\Controllers\PdfDownloadController;
 
 
-Route::get('/phpinfo', function () {
-    phpinfo();
-});
-
-
-
 Route::get('/', function () {
     $user = Auth::user();
 
