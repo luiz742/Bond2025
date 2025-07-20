@@ -11,7 +11,7 @@ use App\Models\Client;
 |--------------------------------------------------------------------------
 */
 
-// Lista todos os usuários (id, name, email)
+// Lista todos os usuários
 Route::get('/users', function () {
     return response()->json(User::select('id', 'name', 'email')->get());
 });
@@ -26,22 +26,7 @@ Route::get('/users/search', function (Request $request) {
     );
 });
 
-// Lista todos os clientes (para busca geral)
-Route::get('/clients', function () {
-    return response()->json(Client::select('id', 'name', 'user_id')->get());
-});
-
-// Busca cliente por nome (novo)
-Route::get('/clients/search', function (Request $request) {
-    $name = $request->query('name', '');
-    return response()->json(
-        Client::select('id', 'name', 'user_id')
-            ->where('name', 'like', "%{$name}%")
-            ->get()
-    );
-});
-
-// Lista clientes de um usuário (por user_id)
+// Lista clientes de um usuário (por ID)
 Route::get('/users/{id}/clients', function ($id) {
     $clients = Client::select('id', 'name')
         ->where('user_id', $id)
@@ -49,7 +34,31 @@ Route::get('/users/{id}/clients', function ($id) {
     return response()->json($clients);
 });
 
-// Lista documentos do cliente
+// Lista todos os clientes (para buscar clientId pelo nome)
+Route::get('/clients', function () {
+    return response()->json(Client::select('id', 'name', 'user_id')->get());
+});
+
+// Lista familiares de um cliente (spouse, filhos, etc.)
+Route::get('/clients/{id}/family', function ($id) {
+    $client = Client::with('familyMembers')->find($id);
+
+    if (!$client) {
+        return response()->json([], 200);
+    }
+
+    return response()->json(
+        $client->familyMembers->map(function ($m) {
+            return [
+                'id' => $m->id,
+                'name' => $m->name,
+                'type' => $m->type, // spouse, child_1, etc.
+            ];
+        })
+    );
+});
+
+// Lista documentos do cliente com status dos arquivos
 Route::get('/clients/{id}/documents', function ($id) {
     $client = Client::with(['service.documents', 'files'])->find($id);
 
@@ -57,20 +66,17 @@ Route::get('/clients/{id}/documents', function ($id) {
         return response()->json(['error' => 'Client not found'], 404);
     }
 
-    // Retorna lista vazia se não houver service/documents
-    $documents = collect();
-    if ($client->service && $client->service->documents) {
-        $documents = $client->service->documents->map(function ($doc) use ($client) {
-            $file = $client->files->firstWhere('document_id', $doc->id);
-            return [
-                'document_id' => $doc->id,
-                'document_name' => $doc->name,
-                'client_type' => $doc->client_type,
-                'file_status' => $file ? $file->status : 'not uploaded',
-                'file_path' => $file ? $file->path : null,
-            ];
-        });
-    }
+    $documents = $client->service->documents->map(function ($doc) use ($client) {
+        $file = $client->files->firstWhere('document_id', $doc->id);
+
+        return [
+            'document_id' => $doc->id,
+            'document_name' => $doc->name,
+            'client_type' => $doc->client_type,
+            'file_status' => $file ? $file->status : 'not uploaded',
+            'file_path' => $file ? $file->path : null,
+        ];
+    });
 
     return response()->json([
         'client_id' => $client->id,
