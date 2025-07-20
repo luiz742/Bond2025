@@ -16,7 +16,7 @@ Route::get('/users', function () {
     return response()->json(User::select('id', 'name', 'email')->get());
 });
 
-// Busca usuários por nome (query param: name)
+// Busca usuários por nome
 Route::get('/users/search', function (Request $request) {
     $name = $request->query('name', '');
     return response()->json(
@@ -26,7 +26,22 @@ Route::get('/users/search', function (Request $request) {
     );
 });
 
-// Lista clientes vinculados a um usuário (id)
+// Lista todos os clientes (para busca geral)
+Route::get('/clients', function () {
+    return response()->json(Client::select('id', 'name', 'user_id')->get());
+});
+
+// Busca cliente por nome (novo)
+Route::get('/clients/search', function (Request $request) {
+    $name = $request->query('name', '');
+    return response()->json(
+        Client::select('id', 'name', 'user_id')
+            ->where('name', 'like', "%{$name}%")
+            ->get()
+    );
+});
+
+// Lista clientes de um usuário (por user_id)
 Route::get('/users/{id}/clients', function ($id) {
     $clients = Client::select('id', 'name')
         ->where('user_id', $id)
@@ -34,28 +49,28 @@ Route::get('/users/{id}/clients', function ($id) {
     return response()->json($clients);
 });
 
-// Lista documentos do cliente com status do arquivo (uploaded, approved, not uploaded)
+// Lista documentos do cliente
 Route::get('/clients/{id}/documents', function ($id) {
-    // Busca o cliente com service e os documentos do serviço e arquivos enviados
     $client = Client::with(['service.documents', 'files'])->find($id);
 
     if (!$client) {
         return response()->json(['error' => 'Client not found'], 404);
     }
 
-    // Para cada documento do serviço, tenta associar o arquivo enviado pelo cliente
-    $documents = $client->service->documents->map(function ($doc) use ($client) {
-        // Busca o arquivo do cliente para esse documento (pode ser null)
-        $file = $client->files->firstWhere('document_id', $doc->id);
-
-        return [
-            'document_id' => $doc->id,
-            'document_name' => $doc->name,
-            'client_type' => $doc->client_type,
-            'file_status' => $file ? $file->status : 'not uploaded',
-            'file_path' => $file ? $file->path : null,
-        ];
-    });
+    // Retorna lista vazia se não houver service/documents
+    $documents = collect();
+    if ($client->service && $client->service->documents) {
+        $documents = $client->service->documents->map(function ($doc) use ($client) {
+            $file = $client->files->firstWhere('document_id', $doc->id);
+            return [
+                'document_id' => $doc->id,
+                'document_name' => $doc->name,
+                'client_type' => $doc->client_type,
+                'file_status' => $file ? $file->status : 'not uploaded',
+                'file_path' => $file ? $file->path : null,
+            ];
+        });
+    }
 
     return response()->json([
         'client_id' => $client->id,
