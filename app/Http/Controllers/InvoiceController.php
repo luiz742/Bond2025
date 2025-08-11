@@ -53,6 +53,7 @@ class InvoiceController extends Controller
             'to_name' => 'required|string',
             'to_address' => 'required|string',
             'to_type' => 'required|string', // Adicionando o campo to_type
+            'type' => 'required|string',
         ]);
 
         Invoice::create($data);
@@ -60,32 +61,6 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
     }
 
-
-    // public function show($id)
-    // {
-    //     $invoice = Invoice::with('client', 'services') // opcional, se quiser relações
-    //         ->find($id);
-
-    //     if (!$invoice) {
-    //         abort(404);
-    //     }
-
-    //     $formattedInvoice = [
-    //         'id' => $invoice->id,
-    //         'invoice_number' => $invoice->invoice_number,
-    //         'date' => $invoice->date,
-    //         'payment_due' => $invoice->payment_due,
-    //         'currency' => $invoice->currency,
-    //         'description' => $invoice->description,
-    //         'to_name' => $invoice->to_name,
-    //         'to_address' => $invoice->to_address,
-    //         'to_tax_registration_number' => $invoice->to_tax_registration_number,
-    //     ];
-
-    //     return Inertia::render('Invoices/Show', [
-    //         'invoice' => $formattedInvoice,
-    //     ]);
-    // }
 
     public function show($id)
     {
@@ -108,11 +83,12 @@ class InvoiceController extends Controller
             'to_address' => 'required|string',
             'description' => 'nullable|string',
             'to_tax_registration_number' => 'nullable|string|max:255',
+            'type' => 'required|string', // Adicionando o campo type
         ]);
 
         $data['user_id'] = $invoice->user_id;
         $data['to_type'] = $invoice->to_type; // Manter o tipo de destinatário original
-
+        $data['type'] = $request->input('type', $invoice->to_type); // Atualizar o tipo se fornecido
 
         $invoice->update($data);
 
@@ -133,12 +109,12 @@ class InvoiceController extends Controller
             'date' => $invoice->date,
             'payment_due' => $invoice->payment_due,
             'currency' => $invoice->currency,
+            'type' => $invoice->type,
             'to' => [
                 'name' => $invoice->to_name,
                 'address' => $invoice->to_address,
                 'tax_registration_number' => $invoice->to_tax_registration_number,
             ],
-            // Adiciona os serviços formatados
             'services' => $invoice->services->map(function ($service) {
                 return [
                     'id' => $service->id,
@@ -151,7 +127,12 @@ class InvoiceController extends Controller
             }),
         ];
 
-        return Inertia::render('Invoices/Printable', [
+        // Nome da view baseado no type
+        $component = $invoice->type === 'sheikhdom'
+            ? 'Invoices/PrintableSheikhdom'
+            : 'Invoices/Printable';
+
+        return Inertia::render($component, [
             'invoice' => $formattedInvoice,
         ]);
     }

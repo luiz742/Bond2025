@@ -18,6 +18,7 @@ class Invoice extends Model
         'to_tax_registration_number',
         'to_type',
         'description',
+        'type', // Adicionando o campo type
     ];
 
     public function user()

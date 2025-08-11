@@ -21,6 +21,7 @@ const form = useForm({
     user_id: props.invoice.user_id,
     client_id: props.invoice.client_id,
     to_tax_registration_number: props.invoice.to_tax_registration_number ?? '',
+    type: props.invoice.type
 })
 
 const submit = () => {
@@ -153,7 +154,7 @@ const formatCurrency = (value) => {
                                 class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                                 disabled />
                             <div v-if="form.errors.currency" class="text-red-500 text-sm mt-1">{{ form.errors.currency
-                                }}</div>
+                            }}</div>
                         </div>
 
                         <div class="md:col-span-2">
@@ -162,6 +163,18 @@ const formatCurrency = (value) => {
                                 class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-black dark:text-white" />
                             <div v-if="form.errors.description" class="text-red-500 text-sm mt-1">{{
                                 form.errors.description }}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Invoice Type</label>
+                            <select v-model="form.type"
+                                class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
+                                <option value="bondandpartners">Bond And Partners</option>
+                                <option value="sheikhdom">Sheikhdom</option>
+                            </select>
+                            <div v-if="form.errors.type" class="text-red-500 text-sm mt-1">
+                                {{ form.errors.type }}
                             </div>
                         </div>
 

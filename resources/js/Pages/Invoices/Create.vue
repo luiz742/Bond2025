@@ -26,6 +26,7 @@ const form = useForm({
     client_id: null,
     to_name: '',
     to_address: '',
+    type: '',
 });
 
 // Atualiza o form.to_type quando toType mudar
@@ -164,7 +165,7 @@ function submit() {
                             <input v-model="form.to_address" type="text"
                                 class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white" />
                             <p v-if="form.errors.to_address" class="text-red-600 text-sm mt-1">{{ form.errors.to_address
-                            }}</p>
+                                }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Currency</label>
@@ -189,6 +190,19 @@ function submit() {
                                 Due</label>
                             <input v-model="form.payment_due" type="date"
                                 class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white" />
+                        </div>
+                        <!-- Invoice Source Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Source Type
+                            </label>
+                            <select v-model="form.type"
+                                class="block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
+                                <option value="">Select type</option>
+                                <option value="bondandpartners">Bond and Partners</option>
+                                <option value="sheikhdom">Sheikhdom</option>
+                            </select>
+                            <p v-if="form.errors.type" class="text-red-600 text-sm mt-1">{{ form.errors.type }}</p>
                         </div>
                     </div>
 
