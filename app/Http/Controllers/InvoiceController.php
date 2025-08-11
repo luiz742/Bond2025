@@ -14,7 +14,7 @@ class InvoiceController extends Controller
     public function index()
     {
         // Pega os invoices do fakeInvoices() sem modificar estrutura do "to"
-        $invoices = Invoice::paginate(15);
+        $invoices = Invoice::with('services')->paginate(15);
         // dd($invoices);
         return Inertia::render('Invoices/Index', [
             'invoices' => $invoices,
@@ -81,7 +81,7 @@ class InvoiceController extends Controller
             'payment_due' => 'required|date',
             'client_id' => 'required_if:to_type,client|nullable|exists:clients,id',
             'to_address' => 'required|string',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'to_tax_registration_number' => 'nullable|string|max:255',
             'type' => 'required|string', // Adicionando o campo type
         ]);
