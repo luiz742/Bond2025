@@ -45,16 +45,27 @@ class InvoiceController extends Controller
     {
         $data = $request->validate([
             'invoice_number' => 'required|string|max:255',
-            'date' => 'required|date',
+            'date' => 'nullable|date',
             'payment_due' => 'required|date',
             'currency' => 'required|string|max:10',
             'user_id' => 'required|exists:users,id',
             'client_id' => 'required_if:to_type,client|nullable|exists:clients,id',
             'to_name' => 'required|string',
-            'to_address' => 'required|string',
-            'to_type' => 'required|string', // Adicionando o campo to_type
+            'to_address' => 'nullable|string',
+            'to_type' => 'required|string',
             'type' => 'required|string',
+            'description' => 'nullable|string',
         ]);
+
+        // Se to_address estiver vazio ou null, setar um valor padrão
+        if (empty($data['to_address'])) {
+            $data['to_address'] = '-';  // Pode ser qualquer string padrão aceitável
+        }
+
+        // Se date vazio, seta a data atual (opcional)
+        if (empty($data['date'])) {
+            $data['date'] = date('Y-m-d');
+        }
 
         Invoice::create($data);
 
