@@ -27,6 +27,7 @@ const filteredClients = computed(() => {
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Clients of {{ user.name }}
             </h2>
+
         </template>
 
         <div class="py-12">

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Invoice;
 use App\Models\User;
+use App\Models\Service;
 use App\Models\InvoiceService;
 
 
@@ -27,6 +28,8 @@ class InvoiceController extends Controller
             ->select('id', 'name')
             ->get();
 
+        $services = Service::all(); // Carrega todos os serviços
+
         $lastInvoice = Invoice::orderByDesc('id')->first();
 
         $nextInvoiceNumber = 1;
@@ -36,6 +39,7 @@ class InvoiceController extends Controller
 
         return Inertia::render('Invoices/Create', [
             'users' => $users,
+            'services' => $services,             // envia services aqui
             'nextInvoiceNumber' => $nextInvoiceNumber,
         ]);
     }

@@ -18,12 +18,19 @@ class ClientController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role == 'super_admin') {
+        if ($user->role === 'super_admin') {
             $clients = Client::orderBy('created_at', 'desc')
                 ->with(['service', 'files', 'user'])
                 ->paginate(10);
+
+            $users = User::select('id', 'name')->get();
+
+            $services = Service::select('id', 'name')->get();
+
             return Inertia::render('Admin/Clients/Index', [
                 'clients' => $clients,
+                'users' => $users,
+                'services' => $services,
             ]);
         } else {
 
