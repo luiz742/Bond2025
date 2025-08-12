@@ -158,7 +158,7 @@ const logout = () => {
                                     <template #trigger>
                                         <button type="button"
                                             class="inline-flex justify-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-white/20">
-                                            Finances
+                                            Finances s
                                             <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
                                                 class="-mr-1 size-5 text-gray-400 dark:text-gray-300">
                                                 <path
