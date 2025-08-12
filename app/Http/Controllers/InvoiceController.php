@@ -59,6 +59,7 @@ class InvoiceController extends Controller
             'to_type' => 'required|string',
             'type' => 'required|string',
             'description' => 'nullable|string',
+            'bond_tax' => 'nullable|string|max:255',
         ]);
 
         // Se to_address estiver vazio ou null, setar um valor padrão
@@ -99,9 +100,13 @@ class InvoiceController extends Controller
             'description' => 'required|string',
             'to_tax_registration_number' => 'nullable|string|max:255',
             'type' => 'required|string', // Adicionando o campo type
+            'currency' => 'required|string|max:10',
+            'show_conversion' => 'sometimes|boolean',
+            'bond_tax' => 'nullable|string|max:255', // Adicionando o campo bond_tax
         ]);
 
         $data['user_id'] = $invoice->user_id;
+        $data['show_conversion'] = $request->input('show_conversion', $invoice->show_conversion);
         $data['to_type'] = $invoice->to_type; // Manter o tipo de destinatário original
         $data['type'] = $request->input('type', $invoice->to_type); // Atualizar o tipo se fornecido
 
@@ -125,6 +130,8 @@ class InvoiceController extends Controller
             'payment_due' => $invoice->payment_due,
             'currency' => $invoice->currency,
             'type' => $invoice->type,
+            'show_conversion' => $invoice->show_conversion,
+            'bond_tax' => $invoice->bond_tax,
             'to' => [
                 'name' => $invoice->to_name,
                 'address' => $invoice->to_address,
@@ -138,6 +145,7 @@ class InvoiceController extends Controller
                     'quantity' => $service->quantity,
                     'unit_price' => $service->unit_price,
                     'total' => $service->total,
+                    'total_usd' => $service->total_usd,
                 ];
             }),
         ];
@@ -161,17 +169,21 @@ class InvoiceController extends Controller
             'unit_price' => 'required|numeric|min:0',
         ]);
 
-        // Define quantity fixo em 1
         $data['quantity'] = 1;
-
-        // Calcula total igual ao unit_price
         $data['total'] = $data['unit_price'];
+
+        $invoice = Invoice::findOrFail($data['invoice_id']);
+        $currency = $invoice->currency ?? 'USD';
+
+        $data['currency'] = $currency;
+
+        $rate = InvoiceService::getExchangeRate($currency);
+        $data['total_usd'] = round($data['total'] * $rate, 2);
 
         $service = InvoiceService::create($data);
 
         return redirect()->back()->with('success', 'Service added successfully.');
     }
-
 
     public function updateInvoiceService(Request $request, $id)
     {

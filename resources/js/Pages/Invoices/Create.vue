@@ -30,6 +30,8 @@ const form = useForm({
     to_name: '',
     description: '',
     type: '',
+    bond_tax: '',      // <-- campo bond_tax adicionado
+    data: ''
 })
 
 // Atualiza o tipo no form
@@ -179,6 +181,13 @@ function submit() {
                     </div>
 
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Invoice Date</label>
+                        <input v-model="form.date" type="date"
+                            class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white" />
+                    </div>
+
+
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Payment Due</label>
                         <input v-model="form.payment_due" type="date"
                             class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white" />
@@ -199,6 +208,21 @@ function submit() {
                             <option value="sheikhdom">Sheikhdom</option>
                         </select>
                     </div>
+
+                    <!-- Campo bond_tax que aparece só para bondandpartners -->
+                    <div v-if="form.type === 'bondandpartners'">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Bond Tax
+                        </label>
+                        <select v-model="form.bond_tax"
+                            class="block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
+                            <option value="">Select Bond Tax</option>
+                            <option value="tax_invoice">TAX INVOICE</option>
+                            <option value="invoice">INVOICE</option>
+                            <option value="proforma_invoice">PROFORMA INVOICE</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <PrimaryButton @click="submit" :disabled="form.processing">
