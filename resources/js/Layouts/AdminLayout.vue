@@ -13,6 +13,12 @@ const page = usePage()
 const notifications = page.props.auth?.notifications || []
 const hasUnread = notifications.length > 0
 
+defineOptions({
+    compilerOptions: {
+        isCustomElement: tag => tag.startsWith('el-')
+    }
+})
+
 const isDark = ref(false)
 
 const toggleTheme = () => {
@@ -78,46 +84,115 @@ const logout = () => {
 
                             <!-- Navigation Links -->
 
-                            <!-- Services - apenas para super_admin -->
+                            <!-- System Settings Dropdown - apenas para super_admin -->
                             <div v-if="$page.props.auth.user.role === 'super_admin'"
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.services.index')"
-                                    :active="route().current('admin.services.index')">
-                                    Services
-                                </NavLink>
+                                class="hidden sm:flex sm:space-x-8 sm:-my-px sm:ms-10 items-center">
+                                <Dropdown align="right" width="48">
+                                    <template #trigger>
+                                        <button type="button"
+                                            class="inline-flex justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            System Settings
+                                            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                                                class="-mr-1 size-5 text-gray-400 dark:text-gray-300">
+                                                <path
+                                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                                    clip-rule="evenodd" fill-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </template>
+
+                                    <template #content>
+                                        <div class="py-1 flex flex-col">
+                                            <NavLink :href="route('admin.users.index')"
+                                                :active="route().current('admin.users.index')"
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+                                                Users
+                                            </NavLink>
+                                            <NavLink :href="route('admin.services.index')"
+                                                :active="route().current('admin.services.index')"
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+                                                Services
+                                            </NavLink>
+                                        </div>
+                                    </template>
+                                </Dropdown>
                             </div>
 
-                            <!-- Subagents - apenas para super_admin -->
+                            <!-- CRM Dropdown - apenas para super_admin -->
                             <div v-if="$page.props.auth.user.role === 'super_admin'"
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.subagents.index')"
-                                    :active="route().current('admin.subagents.index')">
-                                    Subagents
-                                </NavLink>
+                                class="hidden sm:flex sm:space-x-8 sm:-my-px sm:ms-10 items-center">
+                                <Dropdown align="right" width="48">
+                                    <template #trigger>
+                                        <button type="button"
+                                            class="inline-flex justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            CRM
+                                            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                                                class="-mr-1 size-5 text-gray-400 dark:text-gray-300">
+                                                <path
+                                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                                    clip-rule="evenodd" fill-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </template>
+
+                                    <template #content>
+                                        <div class="py-1 flex flex-col">
+                                            <NavLink :href="route('admin.subagents.index')"
+                                                :active="route().current('admin.subagents.index')"
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+                                                Subagents
+                                            </NavLink>
+                                            <NavLink :href="route('admin.clients.index')"
+                                                :active="route().current('admin.clients.index')"
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+                                                Clients
+                                            </NavLink>
+                                        </div>
+                                    </template>
+                                </Dropdown>
                             </div>
 
-                            <!-- Users - apenas para super_admin -->
-                            <div v-if="$page.props.auth.user.role === 'super_admin'"
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.users.index')"
-                                    :active="route().current('admin.users.index')">
-                                    Users
-                                </NavLink>
+
+                            <div class="hidden sm:flex sm:space-x-8 sm:-my-px sm:ms-10 items-center">
+                                <Dropdown align="right" width="48" class="no-pointer">
+                                    <template #trigger>
+                                        <button type="button"
+                                            class="inline-flex justify-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-white/20">
+                                            Finances
+                                            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                                                class="-mr-1 size-5 text-gray-400 dark:text-gray-300">
+                                                <path
+                                                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                                    clip-rule="evenodd" fill-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </template>
+
+                                    <template #content>
+                                        <div class="py-1 flex flex-col">
+                                            <NavLink :href="route('invoices.index')"
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+                                                Invoices
+                                            </NavLink>
+                                            <NavLink :href="route('admin.clients.index')"
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+                                                Quotes
+                                            </NavLink>
+                                            <NavLink :href="route('admin.clients.index')"
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
+                                                Payment Receipt
+                                            </NavLink>
+                                        </div>
+                                    </template>
+                                </Dropdown>
                             </div>
 
-                            <div v-if="$page.props.auth.user.role === 'super_admin'"
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('admin.clients.index')" :active="route().current('profile.show')">
-                                    Clients
-                                </NavLink>
-                            </div>
-
-                            <div v-if="$page.props.auth.user.role === 'super_admin'"
+                            <!-- <div v-if="$page.props.auth.user.role === 'super_admin'"
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('invoices.index')" :active="route().current('profile.show')">
                                     Invoices
                                 </NavLink>
-                            </div>
+                            </div> -->
 
                             <!-- Clients - apenas para admin -->
                             <div v-if="$page.props.auth.user.role === 'admin'"

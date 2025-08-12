@@ -5,3 +5,8 @@
 [x-cloak] {
     display: none;
 }
+
+.no-pointer .dropdown-menu::before,
+.no-pointer .dropdown-menu::after {
+    display: none !important;
+}
