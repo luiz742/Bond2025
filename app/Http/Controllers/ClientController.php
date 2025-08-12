@@ -56,32 +56,32 @@ class ClientController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'service_id' => 'required|exists:services,id',
-        'user_id' => 'nullable|exists:users,id',
-    ]);
-
-    $userId = $validated['user_id'] ?? auth()->id();
-    $validated['user_id'] = $userId;
-    $validated['code_reference'] = Client::generateUniqueCodeReference();
-
-    $client = Client::create($validated);
-    $client->notifyClientCreated();
-
-    if ($request->wantsJson()) {
-        // Requisição Ajax/Inertia: retorna JSON com cliente
-        return response()->json([
-            'client' => $client,
-            'message' => 'Client created successfully.',
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'service_id' => 'required|exists:services,id',
+            'user_id' => 'nullable|exists:users,id',
         ]);
-    } else {
-        // Requisição tradicional: redirect back com banner
-        return redirect()->back()
-            ->banner('Client created successfully.');
+
+        $userId = $validated['user_id'] ?? auth()->id();
+        $validated['user_id'] = $userId;
+        $validated['code_reference'] = Client::generateUniqueCodeReference();
+
+        $client = Client::create($validated);
+        $client->notifyClientCreated();
+
+        if ($request->wantsJson()) {
+            // Requisição Ajax/Inertia: retorna JSON com cliente
+            return response()->json([
+                'client' => $client,
+                'message' => 'Client created successfully.',
+            ]);
+        } else {
+            // Requisição tradicional: redirect back com banner
+            return redirect()->back()
+                ->banner('Client created successfully.');
+        }
     }
-}
 
 
     public function edit(Client $client)

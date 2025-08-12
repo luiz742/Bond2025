@@ -3,6 +3,12 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Client;
+use App\Models\User;
+use App\Models\Invoice;
+
+use App\Http\Controllers\DashboardController;
+
 // User
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\ClientController;
@@ -52,10 +58,9 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/kyc', [KycController::class, 'index'])->name('kyc.index');
