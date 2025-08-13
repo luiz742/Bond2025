@@ -48,7 +48,6 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'invoice_number' => 'required|string|max:255',
             'date' => 'nullable|date',
             'payment_due' => 'required|date',
             'currency' => 'required|string|max:10',
@@ -57,20 +56,35 @@ class InvoiceController extends Controller
             'to_name' => 'required|string',
             'to_address' => 'nullable|string',
             'to_type' => 'required|string',
-            'type' => 'required|string',
+            'type' => 'required|string', // bondandpartners ou sheikhdom
             'description' => 'nullable|string',
             'bond_tax' => 'nullable|string|max:255',
         ]);
 
-        // Se to_address estiver vazio ou null, setar um valor padrão
+        // Se to_address estiver vazio ou null, setar valor padrão
         if (empty($data['to_address'])) {
-            $data['to_address'] = '-';  // Pode ser qualquer string padrão aceitável
+            $data['to_address'] = '-';
         }
 
-        // Se date vazio, seta a data atual (opcional)
+        // Se date vazio, seta a data atual
         if (empty($data['date'])) {
             $data['date'] = date('Y-m-d');
         }
+
+        // Pega o último invoice_number do tipo atual
+        $lastInvoiceNumber = Invoice::where('type', $data['type'])
+            ->max('invoice_number');
+
+        if ($lastInvoiceNumber) {
+            // Incrementa, transformando em int para evitar problemas
+            $nextInvoiceNumber = (int) $lastInvoiceNumber + 1;
+        } else {
+            // Se não existir nenhum, começa em 1001
+            $nextInvoiceNumber = 1001;
+        }
+
+        // Define o invoice_number no dado
+        $data['invoice_number'] = (string) $nextInvoiceNumber;
 
         Invoice::create($data);
 
