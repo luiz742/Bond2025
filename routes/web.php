@@ -29,6 +29,21 @@ use App\Http\Controllers\FamilyMemberController;
 // PDF Vanuatu Documents Download
 use App\Http\Controllers\PdfDownloadController;
 
+use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\QuoteServiceController;
+
+Route::resource('quotes', QuoteController::class);
+
+
+Route::post('/quotes/{quote}/create-invoice', [QuoteController::class, 'createInvoiceFromQuote'])
+    ->name('quotes.create-invoice');
+
+// Rotas para gerenciar os serviços dentro dos quotes
+Route::post('quotes/services', [QuoteServiceController::class, 'store'])->name('quotes.services.store');
+Route::put('quotes/services/{id}', [QuoteServiceController::class, 'update'])->name('quotes.services.update');
+
+// Rota específica para a versão imprimível (printable)
+Route::get('quotes/{id}/printable', [QuoteController::class, 'printable'])->name('quotes.printable');
 
 Route::get('/', function () {
     $user = Auth::user();

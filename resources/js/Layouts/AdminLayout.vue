@@ -158,7 +158,7 @@ const logout = () => {
                                     <template #trigger>
                                         <button type="button"
                                             class="inline-flex justify-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white hover:bg-white/20">
-                                            Finances s
+                                            Finances
                                             <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
                                                 class="-mr-1 size-5 text-gray-400 dark:text-gray-300">
                                                 <path
@@ -174,7 +174,7 @@ const logout = () => {
                                                 class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
                                                 Invoices
                                             </NavLink>
-                                            <NavLink :href="route('admin.clients.index')"
+                                            <NavLink :href="route('quotes.index')"
                                                 class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300">
                                                 Quotes
                                             </NavLink>

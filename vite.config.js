@@ -10,6 +10,10 @@ export default defineConfig({
         }),
         vue({
             template: {
+                compilerOptions: {
+                    // Exemplo: se tiver tags customizadas que o Vue não deve tratar como componentes
+                    isCustomElement: (tag) => tag.startsWith('ion-')
+                },
                 transformAssetUrls: {
                     base: null,
                     includeAbsolute: false,

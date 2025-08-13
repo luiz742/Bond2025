@@ -21,6 +21,7 @@ class Invoice extends Model
         'type', // Adicionando o campo type
         'show_conversion', // Adicionando o campo show_conversion
         'bond_tax', // Adicionando o campo bond_tax
+        'chain_id',
     ];
 
     public function user()
