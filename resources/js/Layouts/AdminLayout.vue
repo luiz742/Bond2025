@@ -13,12 +13,6 @@ const page = usePage()
 const notifications = page.props.auth?.notifications || []
 const hasUnread = notifications.length > 0
 
-defineOptions({
-    compilerOptions: {
-        isCustomElement: tag => tag.startsWith('el-')
-    }
-})
-
 const isDark = ref(false)
 
 const toggleTheme = () => {

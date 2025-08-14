@@ -36,7 +36,6 @@ const confirmDelete = (client) => {
 }
 
 const deleteClient = () => {
-    console.log('Deletando ID:', clientToDelete.value.id)
 
     if (!clientToDelete.value.id) {
         alert('ID inválido para exclusão.')

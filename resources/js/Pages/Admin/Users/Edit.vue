@@ -35,7 +35,6 @@ const submitUser = () => {
 const handleAgreementFileChange = (e) => {
   try {
     const file = e.target.files[0] || null
-    console.log('Arquivo selecionado:', file)
     agreementForm.service_agreement = file
   } catch (error) {
     console.error('Erro no handleAgreementFileChange:', error)
@@ -45,7 +44,6 @@ const handleAgreementFileChange = (e) => {
 const submitAgreement = async () => {
   try {
     const file = agreementForm.service_agreement
-    console.log('Enviando arquivo:', file)
 
     if (!file) {
       alert('Please select a file')

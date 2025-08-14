@@ -33,8 +33,7 @@ const formatBondTax = (value) => {
 
 <template>
     <div class="bg-white p-10 font-sans mx-auto shadow-lg border border-gray-200
-                flex flex-col"
-         style="width: 794px; height: 1123px;">
+                flex flex-col" style="width: 794px; height: 1123px;">
 
         <!-- Conteúdo principal flex-grow -->
         <div class="flex-grow flex flex-col">
@@ -43,7 +42,7 @@ const formatBondTax = (value) => {
             <div class="flex justify-between items-start mb-6">
                 <img src="/images/logo.png" alt="Logo" class="h-12 w-auto" />
                 <div class="text-right text-sm">
-                    <p class="font-semibold">{{ formatBondTax(props.invoice.bond_tax) }}</p>
+                    <p class="font-semibold text-lg mb-4">{{ formatBondTax(props.invoice.bond_tax) }}</p>
                     <p class="font-semibold">Invoice Number</p>
                     <p>{{ props.invoice.invoice_number }}</p>
                 </div>
@@ -100,23 +99,25 @@ const formatBondTax = (value) => {
                 <strong>Total in USD:</strong> {{ formatCurrency(totalConvertedUSD, 'USD') }}
             </div>
 
-            <!-- Account details -->
-            <div class="text-sm mb-8">
-                <p class="font-semibold">Account Details:</p>
-                <p><strong>Account Name:</strong> Bond And Partners Corporate Service Providers L.L.C</p>
-                <p><strong>Account Number:</strong> 19171526</p>
-                <p><strong>IBAN:</strong> AE600500000000019171526</p>
-                <p><strong>ACCOUNT CURRENCY:</strong> AED</p>
-                <p><strong>SWIFT ID:</strong> ABDIAEAD</p>
-                <p><strong>Branch:</strong> Deira Branch, Dubai, UAE.</p>
+            <!-- Seção final (detalhes da conta + estampa) -->
+            <div class="mt-auto mb-8 flex items-center justify-between">
+
+                <!-- Account details -->
+                <div class="text-sm">
+                    <p class="font-semibold">Account Details:</p>
+                    <p><strong>Account Name:</strong> Bond And Partners Corporate Services Provider</p>
+                    <p><strong>Account Number:</strong> 1234567890</p>
+                    <p><strong>Bank Name:</strong> Dubai First Bank</p>
+                    <p><strong>SWIFT Code:</strong> DFBAEADXXX</p>
+                    <p><strong>IBAN:</strong> AE12 3456 7890 1234 5678 901</p>
+                </div>
+
+                <!-- Estampa -->
+                <div>
+                    <img src="/images/stamp.png" alt="Estampa" class="h-[200px]" />
+                </div>
             </div>
-
         </div> <!-- fim flex-grow -->
-
-        <!-- Estampa alinhada à esquerda e fixa acima do footer -->
-        <div class="mb-2">
-            <img src="/images/stamp.png" alt="Estampa" class="h-28" />
-        </div>
 
         <!-- Footer fixo no bottom -->
         <footer class="border-t-4 border-[#0b2d6e] pt-3 text-center">

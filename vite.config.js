@@ -6,13 +6,14 @@ export default defineConfig({
     plugins: [
         laravel({
             input: 'resources/js/app.js',
-            refresh: true,
+            refresh: true, // hot reload para Laravel
         }),
         vue({
             template: {
+                // Configurações do template do Vue, sem mexer em componentes individuais
                 compilerOptions: {
-                    // Exemplo: se tiver tags customizadas que o Vue não deve tratar como componentes
-                    isCustomElement: (tag) => tag.startsWith('ion-')
+                    // Ignora tags customizadas que não devem ser interpretadas como componentes
+                    isCustomElement: (tag) => tag.startsWith('ion-'),
                 },
                 transformAssetUrls: {
                     base: null,
@@ -21,4 +22,9 @@ export default defineConfig({
             },
         }),
     ],
+    resolve: {
+        alias: {
+            '@': '/resources/js', // Facilita imports
+        },
+    },
 });

@@ -12,6 +12,7 @@ const props = defineProps({
 
 // Formulário principal da invoice
 const form = useForm({
+    id: props.invoice.id,
     invoice_number: props.invoice.invoice_number,
     date: props.invoice.date,
     payment_due: props.invoice.payment_due,
@@ -24,6 +25,7 @@ const form = useForm({
     client_id: props.invoice.client_id,
     to_tax_registration_number: props.invoice.to_tax_registration_number ?? '',
     type: props.invoice.type,
+    bond_tax: props.invoice.bond_tax ?? '', // <-- novo campo
     show_conversion: Boolean(props.invoice.show_conversion),
 })
 
@@ -93,9 +95,21 @@ const totalInvoiceAmount = () => {
 <template>
     <AdminLayout :title="`Edit Invoice #${form.invoice_number}`">
         <template #header>
-            <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
-                Edit Invoice #{{ form.invoice_number }}
-            </h2>
+            <div class="flex justify-between items-center w-full">
+                <!-- Left: Título / Edit Invoice -->
+                <div>
+                    <h2 class="font-semibold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+                        Edit Invoice #{{ form.invoice_number }}
+                    </h2>
+                </div>
+
+                <!-- Right: Print -->
+                <a :href="`/invoices/${form.id}/printable`" target="_blank" rel="noopener noreferrer">
+                    <PrimaryButton>
+                        Print
+                    </PrimaryButton>
+                </a>
+            </div>
         </template>
 
         <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -166,6 +180,21 @@ const totalInvoiceAmount = () => {
                             <option value="sheikhdom">Sheikhdom</option>
                         </select>
                         <p v-if="form.errors.type" class="mt-1 text-xs text-red-600">{{ form.errors.type }}</p>
+                    </div>
+
+                    <!-- Campo bond_tax que aparece só para bondandpartners -->
+                    <div v-if="form.type === 'bondandpartners'">
+                        <label for="bond_tax" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                            Invoice Type
+                        </label>
+                        <select id="bond_tax" v-model="form.bond_tax"
+                            class="block w-full rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Select Bond Tax</option>
+                            <option value="tax_invoice">TAX INVOICE</option>
+                            <option value="invoice">INVOICE</option>
+                            <option value="proforma_invoice">PROFORMA INVOICE</option>
+                        </select>
+                        <p v-if="form.errors.bond_tax" class="mt-1 text-xs text-red-600">{{ form.errors.bond_tax }}</p>
                     </div>
 
                     <!-- Currency -->

@@ -138,7 +138,7 @@ function submit() {
                 <!-- Tipo da Invoice -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Invoice Type
+                        Client Type
                     </label>
                     <select v-model="toType"
                         class="block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
@@ -212,7 +212,7 @@ function submit() {
                     <!-- Campo bond_tax que aparece só para bondandpartners -->
                     <div v-if="form.type === 'bondandpartners'">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Bond Tax
+                            Invoice Type
                         </label>
                         <select v-model="form.bond_tax"
                             class="block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
