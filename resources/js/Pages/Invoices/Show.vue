@@ -28,6 +28,7 @@ const form = useForm({
     type: props.invoice.type,
     bond_tax: props.invoice.bond_tax ?? '', // <-- novo campo
     show_conversion: Boolean(props.invoice.show_conversion),
+    paid: props.invoice.paid || 0, // Garantindo que o campo exista
 })
 
 // Submissão do formulário
@@ -124,7 +125,7 @@ const markAsPaid = () => {
                 <!-- Right: Actions -->
                 <div class="flex items-center space-x-3">
                     <!-- Paid (só aparece se ainda não foi paga) -->
-                    <PrimaryButton v-if="form.paid" @click="markAsPaid" :disabled="markPaidForm.processing">
+                    <PrimaryButton v-if="form.paid == 0" @click="markAsPaid" :disabled="markPaidForm.processing">
                         Paid
                     </PrimaryButton>
 
