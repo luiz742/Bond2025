@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\User;
 use App\Models\Service;
 use App\Models\InvoiceService;
+use App\Models\Client;
 
 
 class InvoiceController extends Controller
@@ -98,6 +99,8 @@ class InvoiceController extends Controller
 
         return Inertia::render('Invoices/Show', [
             'invoice' => $invoice,
+            'client' => Client::find($invoice->client_id),
+            'user' => User::find($invoice->user_id)
         ]);
     }
 

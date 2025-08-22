@@ -77,6 +77,8 @@ class QuoteController extends Controller
 
         return Inertia::render('Quotes/Show', [
             'quote' => $quote,
+            'client' => Client::find($quote->client_id),
+            'user' => User::find($quote->user_id)
         ]);
     }
 
@@ -89,10 +91,10 @@ class QuoteController extends Controller
             'date' => 'required|date',
             'valid_until' => 'required|date',
             'client_id' => 'nullable|exists:clients,id',
-            'to_address' => 'required|string',
+            'to_address' => 'nullable|string',
             'description' => 'required|string',
             'to_tax_registration_number' => 'nullable|string|max:255',
-            'type' => 'required|string',
+            'type' => 'nullable|string',
             'currency' => 'required|string|max:10',
             'bond_tax' => 'nullable|string|max:255',
         ]);
@@ -162,10 +164,27 @@ class QuoteController extends Controller
         // Adiciona o chain_id no invoice
         $invoiceData['chain_id'] = $chainId;
 
+        // 🔹 --- Lógica de invoice_number igual ao store() ---
+        $lastInvoiceNumber = Invoice::where('type', $invoiceData['type'])
+            ->max('invoice_number');
+
+        if ($lastInvoiceNumber) {
+            $nextInvoiceNumber = (int) $lastInvoiceNumber + 1;
+        } else {
+            $nextInvoiceNumber = 1001;
+        }
+
+        $invoiceData['invoice_number'] = (string) $nextInvoiceNumber;
+        // 🔹 --- fim da lógica ---
+
         $invoice = Invoice::create($invoiceData);
 
-        // Copiar serviços da quote para invoice (se quiser) aqui
+        // Se precisar copiar serviços da quote para invoice
+        // foreach ($quote->services as $service) {
+        //     $invoice->services()->create($service->toArray());
+        // }
 
-        return redirect()->route('invoices.show', $invoice)->with('success', 'Invoice created from quote successfully.');
+        return redirect()->route('invoices.show', $invoice)
+            ->with('success', 'Invoice created from quote successfully.');
     }
 }

@@ -7,7 +7,8 @@ import { useForm } from '@inertiajs/vue3'
 // Props
 const props = defineProps({
     invoice: Object,
-    users: Array,
+    user: Object,
+    client: Object,
 })
 
 // Formulário principal da invoice
@@ -112,97 +113,25 @@ const totalInvoiceAmount = () => {
             </div>
         </template>
 
-        <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Formulário Invoice -->
-            <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-8 mb-10">
-                <form @submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- To Name (disabled) -->
-                    <div>
-                        <label for="to_name"
-                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">To
-                            Name</label>
-                        <input id="to_name" v-model="form.to_name" disabled
-                            class="w-full rounded border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <p v-if="form.errors.to_name" class="mt-1 text-xs text-red-600">{{ form.errors.to_name }}</p>
-                    </div>
+        <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Invoice Details (maior) -->
+            <div class="lg:col-span-2 bg-white dark:bg-gray-900 rounded-lg shadow p-8">
+                <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-4">Invoice Details</h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                    Fill in the details for this quote, including dates, currency, and description.
+                    <br>
+                    Client: {{ props.client?.name || 'N/A' }}
+                    <br>
+                    Subagent: {{ props.user?.name || 'N/A' }}
+                </p>
 
-                    <!-- TRN -->
-                    <div>
-                        <label for="trn"
-                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">TRN</label>
-                        <input id="trn" v-model="form.to_tax_registration_number"
-                            class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <p v-if="form.errors.to_tax_registration_number" class="mt-1 text-xs text-red-600">{{
-                            form.errors.to_tax_registration_number }}</p>
-                    </div>
 
-                    <!-- To Address full width -->
-                    <div class="md:col-span-2">
-                        <label for="to_address"
-                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                            To Address
-                        </label>
-                        <input id="to_address" v-model="form.to_address" placeholder="Enter address"
-                            class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <p v-if="form.errors.to_address" class="mt-1 text-xs text-red-600">
-                            {{ form.errors.to_address }}
-                        </p>
-                    </div>
-
-                    <!-- Date -->
-                    <div>
-                        <label for="date"
-                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Invoice
-                            Date</label>
-                        <input id="date" type="date" v-model="form.date"
-                            class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <p v-if="form.errors.date" class="mt-1 text-xs text-red-600">{{ form.errors.date }}</p>
-                    </div>
-
-                    <!-- Payment Due -->
-                    <div>
-                        <label for="payment_due"
-                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Payment
-                            Due</label>
-                        <input id="payment_due" type="date" v-model="form.payment_due"
-                            class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <p v-if="form.errors.payment_due" class="mt-1 text-xs text-red-600">{{ form.errors.payment_due
-                        }}</p>
-                    </div>
-
-                    <!-- Invoice Type -->
-                    <div>
-                        <label for="type"
-                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Company</label>
-                        <select id="type" v-model="form.type"
-                            class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="bondandpartners">Bond and Partners Corporate Service Providers LLC</option>
-                            <option value="sheikhdom">Sheikhdom</option>
-                        </select>
-                        <p v-if="form.errors.type" class="mt-1 text-xs text-red-600">{{ form.errors.type }}</p>
-                    </div>
-
-                    <!-- Campo bond_tax que aparece só para bondandpartners -->
-                    <div v-if="form.type === 'bondandpartners'">
-                        <label for="bond_tax" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                            Invoice Type
-                        </label>
-                        <select id="bond_tax" v-model="form.bond_tax"
-                            class="block w-full rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="">Select Bond Tax</option>
-                            <option value="tax_invoice">TAX INVOICE</option>
-                            <option value="invoice">INVOICE</option>
-                            <option value="proforma_invoice">PROFORMA INVOICE</option>
-                        </select>
-                        <p v-if="form.errors.bond_tax" class="mt-1 text-xs text-red-600">{{ form.errors.bond_tax }}</p>
-                    </div>
-
+                <form @submit.prevent="submit" class="grid grid-cols-1 gap-6 sm:grid-cols-6">
                     <!-- Currency -->
-                    <div>
-                        <label for="currency"
-                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Currency</label>
-                        <select id="currency" v-model="form.currency"
-                            class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Currency</label>
+                        <select v-model="form.currency"
+                            class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                             <option value="">Select currency</option>
                             <option value="AED">AED</option>
                             <option value="USD">USD</option>
@@ -210,47 +139,61 @@ const totalInvoiceAmount = () => {
                             <option value="EGP">EGP</option>
                             <option value="TRY">TRY</option>
                         </select>
-                        <p v-if="form.errors.currency" class="mt-1 text-xs text-red-600">{{ form.errors.currency }}</p>
                     </div>
 
-
-                    <!-- Description full width -->
-                    <div class="md:col-span-2">
-                        <label for="description"
-                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Description</label>
-                        <input id="description" type="text" v-model="form.description"
-                            placeholder="Add a brief description"
-                            class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        <p v-if="form.errors.description" class="mt-1 text-xs text-red-600">{{ form.errors.description
-                        }}</p>
+                    <!-- Invoice Date -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Invoice Date</label>
+                        <input v-model="form.date" type="date"
+                            class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                     </div>
 
-                    <!-- Show Conversion Checkbox -->
-                    <div class="md:col-span-2 flex items-center space-x-2">
-                        <input type="checkbox" id="show_conversion" v-model="form.show_conversion"
-                            class="rounded border-gray-300 dark:border-gray-700 text-indigo-600 focus:ring-indigo-500" />
-                        <label for="show_conversion" class="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Show USD Conversion
-                        </label>
+                    <!-- Payment Due -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Payment Due</label>
+                        <input v-model="form.payment_due" type="date"
+                            class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                     </div>
 
-                    <!-- Submit -->
-                    <div class="md:col-span-2 text-right mt-4">
-                        <PrimaryButton :disabled="form.processing" class="inline-flex items-center space-x-2">
-                            <svg class="w-5 h-5 animate-spin" v-if="form.processing" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                    stroke-width="4">
-                                </circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                            </svg>
-                            <span>{{ form.processing ? 'Saving...' : 'Save Changes' }}</span>
+                    <!-- Description -->
+                    <div class="sm:col-span-6">
+                        <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Description</label>
+                        <input v-model="form.description" type="text" placeholder="Enter a short description"
+                            class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                    </div>
+
+                    <!-- Company -->
+                    <div class="sm:col-span-3">
+                        <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Company</label>
+                        <select v-model="form.type"
+                            class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <option value="">Select company</option>
+                            <option value="bondandpartners">Bond and Partners Corporate Service Providers LLC</option>
+                            <option value="sheikhdom">Sheikhdom</option>
+                        </select>
+                    </div>
+
+                    <!-- Bond Tax -->
+                    <div v-if="form.type === 'bondandpartners'" class="sm:col-span-3">
+                        <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Invoice Type</label>
+                        <select v-model="form.bond_tax"
+                            class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <option value="">Select Bond Tax</option>
+                            <option value="tax_invoice">TAX INVOICE</option>
+                            <option value="invoice">INVOICE</option>
+                            <option value="proforma_invoice">PROFORMA INVOICE</option>
+                        </select>
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="sm:col-span-6 flex justify-end gap-4 mt-4">
+                        <PrimaryButton :disabled="form.processing">{{ form.id ? 'Save Changes' : 'Create Invoice' }}
                         </PrimaryButton>
                     </div>
                 </form>
             </div>
 
-            <!-- Services Section -->
+            <!-- Services Section (menor) -->
             <section class="bg-white dark:bg-gray-900 rounded-lg shadow p-8">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Services</h3>
@@ -289,7 +232,7 @@ const totalInvoiceAmount = () => {
                                 class="hover:bg-gray-50 dark:hover:bg-gray-800">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
                                     service.name
-                                }}</td>
+                                    }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
                                     service.quantity }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
@@ -310,9 +253,10 @@ const totalInvoiceAmount = () => {
                 <!-- Total da invoice -->
                 <div class="mt-6 text-right text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Total Invoice Amount: <span class="text-indigo-600">{{ formatCurrency(totalInvoiceAmount())
-                    }}</span>
+                        }}</span>
                 </div>
             </section>
+
         </div>
 
         <!-- Create Service Modal -->

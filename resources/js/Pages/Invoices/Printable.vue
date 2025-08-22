@@ -1,28 +1,49 @@
 <script setup>
-const props = defineProps({ invoice: Object });
+import { computed } from 'vue'
+import { bankDetails } from './plugins/bankDetails'  // ✅ import do arquivo externo
 
-const showConversion = props.invoice.show_conversion;
+// ✅ Props
+const props = defineProps({
+    invoice: Object,
+})
 
+// ✅ Reatividade para show_conversion
+const showConversion = computed(() => props.invoice?.show_conversion ?? false)
+
+// ✅ Pega os detalhes bancários conforme a moeda da invoice
+const account = computed(() => {
+    const currency = props.invoice?.currency || 'AED'
+    return bankDetails[currency] || bankDetails['AED']
+})
+
+// ✅ Função de formatação de moeda
 function formatCurrency(value, currency = 'USD') {
-    if (typeof value !== 'number') value = parseFloat(value) || 0;
+    if (typeof value !== 'number') value = parseFloat(value) || 0
     return value.toLocaleString(undefined, {
         style: 'currency',
         currency,
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-    });
+    })
 }
 
-const totalServices = props.invoice.services
-    ? props.invoice.services.reduce((sum, service) => sum + parseFloat(service.unit_price || 0), 0)
-    : 0;
+// ✅ Soma dos serviços (unit_price)
+const totalServices = computed(() => {
+    return props.invoice?.services
+        ? props.invoice.services.reduce((sum, service) => sum + parseFloat(service.unit_price || 0), 0)
+        : 0
+})
 
-const totalConvertedUSD = props.invoice.services
-    ? props.invoice.services.reduce((sum, service) => {
-        return sum + (parseFloat(service.total_usd) || 0);
-    }, 0)
-    : 0;
+// ✅ Soma dos serviços convertidos em USD
+const totalConvertedUSD = computed(() => {
+    return props.invoice?.services
+        ? props.invoice.services.reduce((sum, service) => {
+            return sum + (parseFloat(service.total_usd) || 0)
+        }, 0)
+        : 0
+})
 
+// ✅ Formatação do bond_tax
 const formatBondTax = (value) => {
     if (!value) return ''
     let formatted = value.replace(/_/g, ' ')
@@ -30,6 +51,7 @@ const formatBondTax = (value) => {
     return formatted
 }
 </script>
+
 
 <template>
     <div class="bg-white p-10 font-sans mx-auto shadow-lg border border-gray-200
@@ -102,14 +124,12 @@ const formatBondTax = (value) => {
             <!-- Seção final (detalhes da conta + estampa) -->
             <div class="mt-auto mb-8 flex items-center justify-between">
 
-                <!-- Account details -->
+                <!-- Exibir dados bancários -->
                 <div class="text-sm">
                     <p class="font-semibold">Account Details:</p>
-                    <p><strong>Account Name:</strong> Bond And Partners Corporate Services Provider</p>
-                    <p><strong>Account Number:</strong> 1234567890</p>
-                    <p><strong>Bank Name:</strong> Dubai First Bank</p>
-                    <p><strong>SWIFT Code:</strong> DFBAEADXXX</p>
-                    <p><strong>IBAN:</strong> AE12 3456 7890 1234 5678 901</p>
+                    <div v-for="(value, key) in account" :key="key">
+                        <p><strong>{{ key }}:</strong> {{ value }}</p>
+                    </div>
                 </div>
 
                 <!-- Estampa -->

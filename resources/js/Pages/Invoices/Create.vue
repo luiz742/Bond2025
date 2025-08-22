@@ -132,102 +132,129 @@ function submit() {
                 @update:show="showClientModal = $event" @created="onClientCreated" />
         </template>
 
-        <div class="py-12 max-w-4xl mx-auto sm:px-6 lg:px-8">
+        <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 space-y-6">
 
-                <!-- Tipo da Invoice -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Client Type
-                    </label>
-                    <select v-model="toType"
-                        class="block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
-                        <option value="user">B2B (User)</option>
-                        <option value="client">B2C (Client)</option>
-                    </select>
-                </div>
+                <form @submit.prevent="submit" class="space-y-12">
+                    <!-- Seção: Tipo e Seleção de Cliente -->
+                    <div class="border-b border-gray-900/10 dark:border-gray-700 pb-12">
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Invoice Recipient</h2>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            Select the type of client and link it to a user or client profile.
+                        </p>
 
-                <!-- Seleção de Usuário -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        User
-                    </label>
-                    <SearchableSelect v-model="selectedUserId" :options="filteredUsers" label-key="name" value-key="id"
-                        placeholder="Search users..." />
-                </div>
+                        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                            <!-- Tipo da Invoice -->
+                            <div class="sm:col-span-3">
+                                <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Client
+                                    Type</label>
+                                <select v-model="toType"
+                                    class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <option value="user">B2B (User)</option>
+                                    <option value="client">B2C (Client)</option>
+                                </select>
+                            </div>
 
-                <!-- Seleção de Cliente (apenas se B2C) -->
-                <div v-if="toType === 'client'">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 mt-4">
-                        Client
-                    </label>
-                    <SearchableSelect v-model="selectedClientId" :options="clientsForSelectedUser" label-key="name"
-                        value-key="id" placeholder="Search clients..." />
-                </div>
+                            <!-- Seleção de Usuário -->
+                            <div class="sm:col-span-3">
+                                <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">User</label>
+                                <SearchableSelect v-model="selectedUserId" :options="filteredUsers" label-key="name"
+                                    value-key="id" placeholder="Search users..." class="mt-2" />
+                            </div>
 
-                <!-- Outros campos da invoice -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Currency</label>
-                        <select v-model="form.currency"
-                            class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
-                            <option value="">Select currency</option>
-                            <option value="AED">AED</option>
-                            <option value="USD">USD</option>
-                            <option value="AUD">AUD</option>
-                            <option value="EGP">EGP</option>
-                            <option value="TRY">TRY</option>
-                        </select>
+                            <!-- Seleção de Cliente (apenas se B2C) -->
+                            <div v-if="toType === 'client'" class="sm:col-span-6">
+                                <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Client</label>
+                                <SearchableSelect v-model="selectedClientId" :options="clientsForSelectedUser"
+                                    label-key="name" value-key="id" placeholder="Search clients..." class="mt-2" />
+                            </div>
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Invoice Date</label>
-                        <input v-model="form.date" type="date"
-                            class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white" />
+                    <!-- Seção: Detalhes da Invoice -->
+                    <div class="border-b border-gray-900/10 dark:border-gray-700 pb-12">
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white">Invoice Details</h2>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            Fill in the details for this invoice, including dates, currency, and description.
+                        </p>
+
+                        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                            <!-- Currency -->
+                            <div class="sm:col-span-2">
+                                <label
+                                    class="block text-sm font-medium text-gray-900 dark:text-gray-300">Currency</label>
+                                <select v-model="form.currency"
+                                    class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <option value="">Select currency</option>
+                                    <option value="AED">AED</option>
+                                    <option value="USD">USD</option>
+                                    <option value="AUD">AUD</option>
+                                    <option value="EGP">EGP</option>
+                                    <option value="TRY">TRY</option>
+                                </select>
+                            </div>
+
+                            <!-- Invoice Date -->
+                            <div class="sm:col-span-2">
+                                <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Invoice
+                                    Date</label>
+                                <input v-model="form.date" type="date"
+                                    class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                            </div>
+
+                            <!-- Payment Due -->
+                            <div class="sm:col-span-2">
+                                <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Payment
+                                    Due</label>
+                                <input v-model="form.payment_due" type="date"
+                                    class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                            </div>
+
+                            <!-- Description -->
+                            <div class="sm:col-span-6">
+                                <label
+                                    class="block text-sm font-medium text-gray-900 dark:text-gray-300">Description</label>
+                                <input v-model="form.description" type="text" placeholder="Enter a short description"
+                                    class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                            </div>
+
+                            <!-- Company -->
+                            <div class="sm:col-span-3">
+                                <label
+                                    class="block text-sm font-medium text-gray-900 dark:text-gray-300">Company</label>
+                                <select v-model="form.type"
+                                    class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <option value="">Select company</option>
+                                    <option value="bondandpartners">Bond and Partners Corporate Service Providers LLC
+                                    </option>
+                                    <option value="sheikhdom">Sheikhdom</option>
+                                </select>
+                            </div>
+
+                            <!-- Bond Tax (apenas para bondandpartners) -->
+                            <div v-if="form.type === 'bondandpartners'" class="sm:col-span-3">
+                                <label class="block text-sm font-medium text-gray-900 dark:text-gray-300">Invoice
+                                    Type</label>
+                                <select v-model="form.bond_tax"
+                                    class="mt-2 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <option value="">Select Bond Tax</option>
+                                    <option value="tax_invoice">TAX INVOICE</option>
+                                    <option value="invoice">INVOICE</option>
+                                    <option value="proforma_invoice">PROFORMA INVOICE</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Payment Due</label>
-                        <input v-model="form.payment_due" type="date"
-                            class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white" />
+                    <!-- Botões -->
+                    <div class="mt-6 flex items-center justify-end gap-x-6">
+                        <button type="button"
+                            class="text-sm font-semibold text-gray-900 dark:text-gray-300 hover:underline">
+                            Cancel
+                        </button>
+                        <PrimaryButton :disabled="form.processing">Create Invoice</PrimaryButton>
                     </div>
-
-                    <div class="col-span-2">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-                        <input v-model="form.description" type="text"
-                            class="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white" />
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company</label>
-                        <select v-model="form.type"
-                            class="block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
-                            <option value="">Select company</option>
-                            <option value="bondandpartners">Bond and Partners Corporate Service Providers LLC</option>
-                            <option value="sheikhdom">Sheikhdom</option>
-                        </select>
-                    </div>
-
-                    <!-- Campo bond_tax que aparece só para bondandpartners -->
-                    <div v-if="form.type === 'bondandpartners'">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Invoice Type
-                        </label>
-                        <select v-model="form.bond_tax"
-                            class="block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-white">
-                            <option value="">Select Bond Tax</option>
-                            <option value="tax_invoice">TAX INVOICE</option>
-                            <option value="invoice">INVOICE</option>
-                            <option value="proforma_invoice">PROFORMA INVOICE</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <PrimaryButton @click="submit" :disabled="form.processing">
-                    Create Invoice
-                </PrimaryButton>
+                </form>
             </div>
         </div>
     </AdminLayout>
