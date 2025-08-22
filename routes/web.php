@@ -6,7 +6,7 @@ use Inertia\Inertia;
 use App\Models\Client;
 use App\Models\User;
 use App\Models\Invoice;
-
+use App\Http\Controllers\PaymentReceiptController;
 use App\Http\Controllers\DashboardController;
 
 // User
@@ -78,6 +78,22 @@ Route::middleware([
 
 
 Route::middleware('auth')->group(function () {
+    // Invoices and Payment Receipts
+    Route::put('/invoices/{invoice}/mark-paid', [InvoiceController::class, 'markPaid'])
+        ->name('invoices.markPaid');
+
+    Route::get('/invoices/{invoice}/receipt', [PaymentReceiptController::class, 'show'])
+        ->name('invoices.receipt.show');
+
+    Route::get('/invoices/{invoice}/receipt/download', [PaymentReceiptController::class, 'download'])
+        ->name('invoices.receipt.download');
+
+    Route::get('/payment-receipts', [PaymentReceiptController::class, 'index'])
+        ->name('payment-receipts.index');
+
+
+    // End
+
     Route::get('/kyc', [KycController::class, 'index'])->name('kyc.index');
     Route::get('/kyc/create', [KycController::class, 'create'])->name('kyc.create');
     Route::post('/kyc', [KycController::class, 'store'])->name('kyc.store');

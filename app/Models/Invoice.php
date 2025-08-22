@@ -22,6 +22,8 @@ class Invoice extends Model
         'show_conversion', // Adicionando o campo show_conversion
         'bond_tax', // Adicionando o campo bond_tax
         'chain_id',
+        'paid',          // <-- garante que está liberado
+        'paid_at',
     ];
 
     public function user()

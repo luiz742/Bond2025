@@ -91,6 +91,23 @@ const totalInvoiceAmount = () => {
     if (!props.invoice.services) return 0
     return props.invoice.services.reduce((sum, s) => sum + parseFloat(s.total || 0), 0)
 }
+
+const markPaidForm = useForm({})
+
+// Função para marcar como paga
+const markAsPaid = () => {
+    markPaidForm.put(`/invoices/${props.invoice.id}/mark-paid`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            // Atualiza estado local para esconder o botão sem reload
+            // form.paid = true
+            // form.paid_at = new Date().toISOString()
+        },
+        onError: () => {
+            // alert('Erro ao marcar invoice como paga.')
+        },
+    })
+}
 </script>
 
 <template>
@@ -104,12 +121,20 @@ const totalInvoiceAmount = () => {
                     </h2>
                 </div>
 
-                <!-- Right: Print -->
-                <a :href="`/invoices/${form.id}/printable`" target="_blank" rel="noopener noreferrer">
-                    <PrimaryButton>
-                        Print
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Paid (só aparece se ainda não foi paga) -->
+                    <PrimaryButton v-if="form.paid" @click="markAsPaid" :disabled="markPaidForm.processing">
+                        Paid
                     </PrimaryButton>
-                </a>
+
+                    <!-- Print -->
+                    <a :href="`/invoices/${form.id}/printable`" target="_blank" rel="noopener noreferrer">
+                        <PrimaryButton>
+                            Print
+                        </PrimaryButton>
+                    </a>
+                </div>
             </div>
         </template>
 
@@ -232,7 +257,7 @@ const totalInvoiceAmount = () => {
                                 class="hover:bg-gray-50 dark:hover:bg-gray-800">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
                                     service.name
-                                    }}</td>
+                                }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
                                     service.quantity }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
@@ -253,7 +278,7 @@ const totalInvoiceAmount = () => {
                 <!-- Total da invoice -->
                 <div class="mt-6 text-right text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Total Invoice Amount: <span class="text-indigo-600">{{ formatCurrency(totalInvoiceAmount())
-                        }}</span>
+                    }}</span>
                 </div>
             </section>
 

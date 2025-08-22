@@ -220,4 +220,14 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', 'Service updated successfully.');
     }
 
+    public function markPaid(Invoice $invoice)
+    {
+        // dd($invoice);
+        $invoice->update([
+            'paid' => 1,
+            'paid_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Invoice marcada como paga.');
+    }
 }
