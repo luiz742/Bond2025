@@ -17,6 +17,8 @@ class QuoteServiceController extends Controller
             'unit_price' => 'required|numeric|min:0',
             'quantity' => 'nullable|integer|min:1',
             'currency' => 'nullable|string|max:10',
+            'auto_conversion' => 'nullable|boolean',
+            'total_usd' => 'nullable|numeric|min:0',
         ]);
 
         $data['quantity'] = $data['quantity'] ?? 1;
@@ -26,13 +28,24 @@ class QuoteServiceController extends Controller
         $currency = $quote->currency ?? 'USD';
         $data['currency'] = $currency;
 
-        $rate = QuoteService::getExchangeRate($currency);
-        $data['total_usd'] = round($data['total'] * $rate, 2);
+        $autoConversion = $request['auto_conversion'];
 
-        $service = QuoteService::create($data);
+        if (!$autoConversion) {
+            // Usa valor manual: total_usd é a cotação da moeda (ex: AED = 3.65)
+            $rate = $data['total_usd'] ?? 1; // se não enviou, assume 1
+
+            $data['total_usd'] = round($data['total'] * $rate, 2);
+        } else {
+            // Calcula automaticamente
+            $rate = QuoteService::getExchangeRate($currency);
+            $data['total_usd'] = round($data['total'] * $rate, 2);
+        }
+
+        QuoteService::create($data);
 
         return redirect()->back()->with('success', 'Service added successfully.');
     }
+
 
     public function update(Request $request, $id)
     {

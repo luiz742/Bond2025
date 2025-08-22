@@ -51,6 +51,8 @@ const serviceForm = useForm({
     unit_price: '',
     total: 0,
     quote_id: props.quote.id,
+    auto_conversion: '',
+    total_usd: '',
 })
 
 watch(() => serviceForm.unit_price, () => {
@@ -68,10 +70,10 @@ const closeCreateServiceModal = () => {
 }
 
 const submitServiceCreate = () => {
-    serviceForm.post('/quote-services', {
+    serviceForm.post('/quotes/services', {
         onSuccess: () => {
             closeCreateServiceModal()
-            window.location.reload()
+            console.log('auto conversion:', serviceForm.auto_conversion)
         },
     })
 }
@@ -229,7 +231,7 @@ const totalQuoteAmount = () => {
                                 class="hover:bg-gray-50 dark:hover:bg-gray-800">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
                                     service.name
-                                }}</td>
+                                    }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
                                     service.quantity }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{
@@ -272,6 +274,18 @@ const totalQuoteAmount = () => {
                             class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                         <div class="text-right text-sm text-gray-700 dark:text-gray-300 font-semibold">
                             Total: {{ formatCurrency(parseFloat(serviceForm.total)) }}
+                        </div>
+
+                        <label class="inline-flex items-center space-x-2">
+                            <input type="checkbox" v-model="serviceForm.auto_conversion"
+                                class="rounded border-gray-300 dark:border-gray-700" />
+                            <span class="text-sm text-gray-700 dark:text-gray-300">Auto-convert to USD</span>
+                        </label>
+
+                        <div v-if="!serviceForm.auto_conversion">
+                            <input v-model.number="serviceForm.total_usd" type="number" step="0.01"
+                                placeholder="Manual USD total"
+                                class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                         </div>
 
                         <div class="flex justify-end space-x-3">
