@@ -101,7 +101,7 @@ const markAsPaid = () => {
         preserveScroll: true,
         onSuccess: () => {
             // Atualiza estado local para esconder o botão sem reload
-            // form.paid = true
+            form.paid = true
             // form.paid_at = new Date().toISOString()
         },
         onError: () => {

@@ -83,14 +83,14 @@ function calculateTotal(services) {
                                         {{ companyLabel(invoice.type) }}
                                     </td>
                                     <td class="px-4 py-2 text-sm">
-                                        <Link :href="`/invoices/${invoice.id}/receipt`"
+                                        <!-- <Link :href="`/invoices/${invoice.id}/receipt`"
                                             class="text-blue-600 hover:underline mr-3">
                                             View Receipt
                                         </Link>
                                         <Link :href="`/invoices/${invoice.id}/receipt/download`"
                                             class="text-green-600 hover:underline">
                                             Download
-                                        </Link>
+                                        </Link> -->
                                     </td>
                                 </tr>
                             </tbody>
