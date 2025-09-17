@@ -147,7 +147,7 @@ const logout = () => {
                             </div>
 
 
-                            <div class="hidden sm:flex sm:space-x-8 sm:-my-px sm:ms-10 items-center">
+                            <div class="hidden sm:flex sm:space-x-8 sm:-my-px sm:ms-10 items-center" v-if="$page.props.auth.user.role === 'super_admin'">
                                 <Dropdown align="right" width="48" class="no-pointer">
                                     <template #trigger>
                                         <button type="button"

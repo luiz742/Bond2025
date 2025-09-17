@@ -57,31 +57,36 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+
+        // valida apenas os campos que o usuário vai enviar
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'service_id' => 'required|exists:services,id',
-            'user_id' => 'nullable|exists:users,id',
+            'user_id' => 'nullable|exists:users,id', // opcional, só se quiser registrar para outro usuário
         ]);
 
-        $userId = $validated['user_id'] ?? auth()->id();
-        $validated['user_id'] = $userId;
+        // força sempre o service_id do usuário logado
+        $validated['service_id'] = $user->service_id;
+
+        // se user_id não foi enviado, pega o próprio usuário
+        $validated['user_id'] = $validated['user_id'] ?? $user->id;
+
         $validated['code_reference'] = Client::generateUniqueCodeReference();
 
         $client = Client::create($validated);
         $client->notifyClientCreated();
 
         if ($request->wantsJson()) {
-            // Requisição Ajax/Inertia: retorna JSON com cliente
             return response()->json([
                 'client' => $client,
                 'message' => 'Client created successfully.',
             ]);
-        } else {
-            // Requisição tradicional: redirect back com banner
-            return redirect()->back()
-                ->banner('Client created successfully.');
         }
+
+        return redirect()->route('admin.clients.index')
+            ->banner('Client created successfully.');
     }
+
 
 
     public function edit(Client $client)

@@ -27,6 +27,7 @@ class ClientController extends Controller
 
             $services = Service::select('id', 'name')->get();
 
+
             return Inertia::render('Admin/Clients/Index', [
                 'clients' => $clients,
                 'users' => $users,
@@ -38,10 +39,13 @@ class ClientController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->with(['service', 'files', 'user'])
                 ->paginate(10);
+            $services = Service::select('id', 'name')
+                ->where('id', $user->service_id)
+                ->get();
         }
-
         return Inertia::render('Admin/Clients/Index', [
             'clients' => $clients,
+            'services' => $services,
         ]);
     }
 
@@ -121,7 +125,7 @@ class ClientController extends Controller
     public function adminstore(Request $request)
     {
         $user = User::find($request->user_id);
-
+        dd($user);
         $request->validate([
             'name' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
@@ -167,7 +171,7 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
             'service_id' => 'required|exists:services,id',
         ]);
-
+        $service_id = Auth::user()->service_id ?? null;
         $validated['user_id'] = $user->id;
         $validated['code_reference'] = Client::generateUniqueCodeReference();
 

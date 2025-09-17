@@ -14,7 +14,6 @@ const emit = defineEmits(['update:show', 'created'])
 
 const form = useForm({
   name: '',
-  service_id: '',
   user_id: props.user?.id || null,
 })
 
@@ -38,6 +37,12 @@ const submit = () => {
       form.reset({ user_id: props.user?.id || null })
       document.body.style.overflow = null
     },
+     onError: (errors) => {
+      console.error('Validation errors:', errors)
+    },
+    onFinish: () => {
+      console.log('Request finished')
+    }
   })
 }
 
@@ -111,22 +116,6 @@ const close = () => {
             />
           </div>
 
-          <div>
-            <label for="service_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Service</label>
-            <select
-              id="service_id"
-              v-model="form.service_id"
-              required
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
-                     focus:border-indigo-500 focus:ring-indigo-500
-                     dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-            >
-              <option disabled value="">Select a service</option>
-              <option v-for="service in services" :key="service.id" :value="service.id">
-                {{ service.name }}
-              </option>
-            </select>
-          </div>
 
           <PrimaryButton :disabled="form.processing" :class="{ 'opacity-25 cursor-not-allowed': form.processing }">
             Submit

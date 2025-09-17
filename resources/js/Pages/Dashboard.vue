@@ -21,9 +21,9 @@ const stats = {
 
 const adminMenus = [
     { name: 'Clients', icon: '👥', href: '/admin/clients' },
-    { name: 'Services', icon: '🌐', href: '/admin/services' },
-    { name: 'Users', icon: '🧑‍💼', href: '/admin/users' },
-    { name: 'Invoices', icon: '📄', href: '/invoices' },
+    // { name: 'Services', icon: '🌐', href: '/admin/services' },
+    // { name: 'Users', icon: '🧑‍💼', href: '/admin/users' },
+    // { name: 'Invoices', icon: '📄', href: '/invoices' },
     { name: 'Settings', icon: '⚙️', href: '/user/profile' },
     { name: 'Logout', icon: '🚪', action: 'logout' }
 ]

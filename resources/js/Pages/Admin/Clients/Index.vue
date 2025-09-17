@@ -13,6 +13,7 @@ const props = defineProps({
   users: Array,
 })
 
+
 const showClientModal = ref(false)
 
 function openCreateClientModal() {
@@ -63,7 +64,7 @@ const deleteClient = () => {
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
         Clients
-      </h2>
+      </h2> {{ props.users }}
 
       <CreateClientModal
         :show="showClientModal"
