@@ -64,7 +64,7 @@ const deleteClient = () => {
     <template #header>
       <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
         Clients
-      </h2> {{ props.users }}
+      </h2>
 
       <CreateClientModal
         :show="showClientModal"
