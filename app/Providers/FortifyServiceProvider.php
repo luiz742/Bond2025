@@ -52,14 +52,14 @@ class FortifyServiceProvider extends ServiceProvider
                         $user = $request->user();
 
                         if ($user && $user->role === 'admin') {
-                            return redirect('/admin/clients');
+                            return redirect('/dashboard');
                         }
 
                         if ($user && $user->role === 'b2b') {
-                            return redirect('/clients');
+                            return redirect('/dashboard');
                         }
 
-                        return redirect('/admin/users'); // fallback
+                        return redirect('/dashboard'); // fallback
                     }
                 };
             }
