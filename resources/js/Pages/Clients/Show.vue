@@ -180,18 +180,19 @@ const getFileUrl = (file) => {
                                                 </a>
                                             </div>
                                             <input :id="`doc-${document.id}`" type="file"
+                                                v-if="getFileForDocument(document.id).status !== 'approved'"
                                                 @change="e => onFileChange(e, document.id)"
                                                 class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                                 accept=".pdf,.jpg,.png" />
 
-                                            <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
+                                            <!-- <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
 
                                             <PrimaryButton
                                                 v-if="form.files[document.id] && getFileForDocument(document.id).status !== 'approved'"
                                                 class="mt-3" :disabled="form.processing"
                                                 @click.prevent="submit(document.id)">
                                                 Submit
-                                            </PrimaryButton>
+                                            </PrimaryButton> -->
 
                                         </template>
 
