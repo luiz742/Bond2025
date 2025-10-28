@@ -15,6 +15,7 @@ const form = useForm({
 })
 
 const submit = () => {
+    // alert(form.service_id)
     form.post(route('clients.store'), {
         onSuccess: () => form.reset(),
     })

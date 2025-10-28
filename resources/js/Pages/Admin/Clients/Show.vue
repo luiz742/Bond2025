@@ -117,7 +117,8 @@ const formatDate = (dateString) => {
                                                 </div>
 
                                                 <!-- Botões se status for "pending" -->
-                                                <div v-if="getFileForDocument(document.id)?.status === 'pending'"
+                                                <!-- <div v-if="getFileForDocument(document.id)?.status === 'pending'" -->
+                                                 <div
                                                     class="flex space-x-3">
                                                     <button
                                                         class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase bg-green-500 hover:bg-green-600 transition"

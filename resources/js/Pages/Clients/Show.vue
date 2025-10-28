@@ -162,15 +162,39 @@ const getFileUrl = (file) => {
                                         <InputLabel :for="`doc-${document.id}`" :value="document.name" class="mb-1" />
 
                                         <template v-if="getFileForDocument(document.id)">
-                                            <div class="text-sm text-gray-700 dark:text-gray-300">
-                                                <span class="font-medium">Status:</span>
-                                                {{ getFileForDocument(document.id).status }}
+                                            <div
+                                                class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300">
+                                                <span class="font-semibold">Status:</span>
+                                                <span
+                                                    class="px-3 py-1 rounded-full text-xs font-semibold text-white uppercase"
+                                                    :class="{
+                                                        'bg-yellow-400': getFileForDocument(document.id).status === 'pending',
+                                                        'bg-green-500': getFileForDocument(document.id).status === 'approved',
+                                                        'bg-red-500': getFileForDocument(document.id).status === 'rejected'
+                                                    }">
+                                                    {{ getFileForDocument(document.id).status?.toUpperCase() || 'N/A' }}
+                                                </span>
                                                 <a :href="getFileUrl(getFileForDocument(document.id))" target="_blank"
                                                     class="ml-4 text-blue-600 hover:underline">
                                                     View Document
                                                 </a>
                                             </div>
+                                            <input :id="`doc-${document.id}`" type="file"
+                                                @change="e => onFileChange(e, document.id)"
+                                                class="mt-2 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-md text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                accept=".pdf,.jpg,.png" />
+
+                                            <InputError :message="form.errors[`files.${document.id}`]" class="mt-2" />
+
+                                            <PrimaryButton
+                                                v-if="form.files[document.id] && getFileForDocument(document.id).status !== 'approved'"
+                                                class="mt-3" :disabled="form.processing"
+                                                @click.prevent="submit(document.id)">
+                                                Submit
+                                            </PrimaryButton>
+
                                         </template>
+
 
                                         <template v-else>
                                             <input :id="`doc-${document.id}`" type="file"

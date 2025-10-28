@@ -59,14 +59,17 @@ class ClientController extends Controller
     {
         $user = auth()->user();
 
+        // dd($request->all());
+
         // valida apenas os campos que o usuário vai enviar
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'user_id' => 'nullable|exists:users,id', // opcional, só se quiser registrar para outro usuário
+            'service_id' => 'required|exists:services,id',
         ]);
 
         // força sempre o service_id do usuário logado
-        $validated['service_id'] = $user->service_id;
+        // $validated['service_id'] = $user->service_id;
 
         // se user_id não foi enviado, pega o próprio usuário
         $validated['user_id'] = $validated['user_id'] ?? $user->id;
@@ -83,7 +86,7 @@ class ClientController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.clients.index')
+        return redirect()->route('clients.index')
             ->banner('Client created successfully.');
     }
 

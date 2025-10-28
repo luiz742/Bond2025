@@ -97,12 +97,12 @@ const filteredDocuments = computed(() => {
     }
 
     return Object.values(grouped)
-    .filter(doc =>
-        doc.name.toLowerCase().includes(q) ||
-        doc.type.toLowerCase().includes(q) ||
-        doc.client_types.some(ct => ct.toLowerCase().includes(q))
-    )
-    .sort((a, b) => a.name.localeCompare(b.name));
+        .filter(doc =>
+            doc.name.toLowerCase().includes(q) ||
+            doc.type.toLowerCase().includes(q) ||
+            doc.client_types.some(ct => ct.toLowerCase().includes(q))
+        )
+        .sort((a, b) => a.name.localeCompare(b.name));
 });
 </script>
 
@@ -138,30 +138,53 @@ const filteredDocuments = computed(() => {
                             class="w-full mb-4 p-2 border border-gray-300 rounded-md dark:bg-gray-800 dark:text-white text-sm" />
 
                         <div v-if="filteredDocuments.length === 0"
-                            class="text-gray-500 dark:text-gray-400 text-sm italic">No matching documents.</div>
+                            class="text-gray-500 dark:text-gray-400 text-sm italic">No
+                            matching documents.</div>
 
-                        <div v-else class="overflow-auto">
+                        <div v-else class="overflow-auto rounded-lg shadow-sm">
                             <table
-                                class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 border border-gray-300 dark:border-gray-600 text-sm">
+                                class="min-w-full border border-gray-300 dark:border-gray-700 border-collapse text-sm">
                                 <thead class="bg-gray-100 dark:bg-gray-700">
                                     <tr>
-                                        <th class="px-4 py-2 text-left">Name</th>
-                                        <th class="px-4 py-2 text-left">Type</th>
-                                        <th class="px-4 py-2 text-left">Client Types</th>
-                                        <th class="px-4 py-2 text-left">Actions</th>
+                                        <th
+                                            class="px-4 py-2 text-left border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-100">
+                                            Name
+                                        </th>
+                                        <th
+                                            class="px-4 py-2 text-left border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-100">
+                                            Type
+                                        </th>
+                                        <th
+                                            class="px-4 py-2 text-left border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-100">
+                                            Client Types
+                                        </th>
+                                        <th
+                                            class="px-4 py-2 text-left border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-100">
+                                            Actions
+                                        </th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
                                     <tr v-for="doc in filteredDocuments" :key="doc.name + doc.type"
-                                        class="bg-white dark:bg-gray-800">
-                                        <td class="px-4 py-2">{{ doc.name }}</td>
-                                        <td class="px-4 py-2 capitalize">{{ doc.type }}</td>
-                                        <td class="px-4 py-2 capitalize">
-                                            {{ doc.client_types.map(ct => ct.replace('_', ' ')).join(', ') }}
+                                        class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                                        <td
+                                            class="px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+                                            {{ doc.name }}
                                         </td>
-                                        <td class="px-4 py-2">
+                                        <td
+                                            class="px-4 py-2 border border-gray-300 dark:border-gray-700 capitalize text-gray-800 dark:text-gray-200">
+                                            {{ doc.type }}
+                                        </td>
+                                        <td
+                                            class="px-4 py-2 border border-gray-300 dark:border-gray-700 capitalize text-gray-800 dark:text-gray-200">
+                                            {{doc.client_types.map(ct => ct.replace('_', ' ')).join(', ')}}
+                                        </td>
+                                        <td class="px-4 py-2 border border-gray-300 dark:border-gray-700">
                                             <button @click="editDocument(doc)"
-                                                class="text-blue-600 hover:underline text-sm">Edit</button>
+                                                class="text-blue-600 dark:text-blue-400 hover:underline text-sm">
+                                                Edit
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -172,7 +195,7 @@ const filteredDocuments = computed(() => {
                     <div class="mt-8">
                         <Link href="/admin/services"
                             class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-600 text-sm font-semibold">
-                            &larr; Back to list
+                        &larr; Back to list
                         </Link>
                     </div>
                 </div>

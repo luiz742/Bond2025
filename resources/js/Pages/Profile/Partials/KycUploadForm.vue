@@ -69,7 +69,7 @@ const submit = () => {
         <template #form>
             <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-12"> -->
                 <!-- B2B Column -->
-                <div class="space-y-6">
+                <div class="col-span-2 space-y-6">
                     <h3 class="text-xl font-semibold border-b pb-2">B2B Documents</h3>
 
                     <!-- Campo: Company Trade License -->
@@ -128,7 +128,7 @@ const submit = () => {
                 </div>
 
                 <!-- B2C Column -->
-                <div class="space-y-6">
+                <div class="col-span-2 space-y-6">
                     <h3 class="text-xl font-semibold border-b pb-2">B2C Documents</h3>
 
                     <!-- Campo: Passport Copy -->
